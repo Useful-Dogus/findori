@@ -19,6 +19,7 @@ MVP 문서 진입용 인덱스입니다.
 - [`feature-spec.md`](./feature-spec.md): 기능이 어떻게 동작해야 하는지 (동작, 예외, QA)
 - [`content-policy.md`](./content-policy.md): 콘텐츠 정책 (표현, 출처, 고지)
 - [`release-checklist.md`](./release-checklist.md): 출시 점검 (Go/No-Go)
+- [`../../specs/001-mvp-spec-alignment/README.md`](../../specs/001-mvp-spec-alignment/README.md): MVP 문서 정합 기준 패키지
 
 ## 권장 사용법
 
