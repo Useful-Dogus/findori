@@ -23,7 +23,6 @@ build/
 
 # Generated
 next-env.d.ts
-src/types/database.types.ts
 tsconfig.tsbuildinfo
 
 # Logs
@@ -32,3 +31,7 @@ npm-debug.log*
 
 *.tmp
 *.swp
+
+# Supabase CLI
+supabase/.branches
+supabase/.temp
