@@ -14,7 +14,7 @@ node_modules/
 out/
 build/
 
-# Env files
+# Env files (.env.example is intentionally tracked — do not add it here)
 .env
 .env.local
 .env.development.local

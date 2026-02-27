@@ -4,8 +4,8 @@ Auto-generated from all feature plans. Last updated: 2026-02-27
 
 ## Active Technologies
 - Markdown, Bash + Claude Code (@-import 런타임 지원), Codex CLI (파일 임포트 없음 — 스크립트 동기화 필요) (036-unified-agent-context)
-
 - TypeScript 5.4+, Node.js 20+ + Next.js 15 (App Router, Turbopack), React 19, Tailwind CSS v4, @supabase/supabase-js, @supabase/ssr (002-tech-baseline-setup)
+- Zod (003-env-secrets)
 
 ## Project Structure
 
@@ -46,9 +46,8 @@ npm run db:types     # Supabase DB 타입 재생성
 - `getUser()` 사용, `getSession()` 금지
 
 ## Recent Changes
+- 003-env-secrets: Added Zod for environment variable validation
 - 036-unified-agent-context: Added Markdown, Bash + Claude Code (@-import 런타임 지원), Codex CLI (파일 임포트 없음 — 스크립트 동기화 필요)
-- 036-unified-agent-context: Added Markdown, Bash + Claude Code (@-import 런타임 지원), Codex CLI (파일 임포트 없음 — 스크립트 동기화 필요)
-- 036-unified-agent-context: Added unified agent context (docs/agent-guidelines.md as single source of truth)
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->
