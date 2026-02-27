@@ -30,8 +30,5 @@ tsconfig.tsbuildinfo
 *.log
 npm-debug.log*
 
-# Local agent context (auto-generated)
-AGENTS.md
-CLAUDE.md
 *.tmp
 *.swp
