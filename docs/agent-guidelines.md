@@ -3,7 +3,7 @@
 Auto-generated from all feature plans. Last updated: 2026-02-27
 
 ## Active Technologies
-- Markdown, Bash + Claude Code (@-import 런타임 지원), Codex CLI (파일 임포트 없음 — 스크립트 동기화 필요) (036-unified-agent-context)
+- Markdown, Bash + Claude Code (@-import 런타임 지원), Codex CLI (파일 언급으로 임포트 동작) (036-unified-agent-context)
 - TypeScript 5.4+, Node.js 20+ + Next.js 15 (App Router, Turbopack), React 19, Tailwind CSS v4, @supabase/supabase-js, @supabase/ssr (002-tech-baseline-setup)
 - Zod (003-env-secrets)
 
@@ -50,4 +50,8 @@ npm run db:types     # Supabase DB 타입 재생성
 - 036-unified-agent-context: Added Markdown, Bash + Claude Code (@-import 런타임 지원), Codex CLI (파일 임포트 없음 — 스크립트 동기화 필요)
 
 <!-- MANUAL ADDITIONS START -->
+## Workflow Rules (Permanent)
+
+- **Commit policy**: 이슈 브랜치에 직접 커밋. `Co-Authored-By: Claude` 또는 "클로드코드 협업자" 라인 절대 금지.
+- **After implement**: 품질 게이트(`npm run validate` + `npm run test`) 통과 후 이슈 브랜치에 커밋 → GitHub PR 생성 후 URL 보고.
 <!-- MANUAL ADDITIONS END -->
