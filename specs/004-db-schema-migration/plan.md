@@ -11,7 +11,7 @@ MVP 데이터 모델(feeds/issues/tags/issue_tags/media_sources) 5개 테이블�
 
 **Language/Version**: TypeScript 5.4+ / Node.js 20+ (타입 재생성)
 **Primary Dependencies**: Supabase CLI, `@supabase/supabase-js` ^2.0, `@supabase/ssr` ^0.5
-**Storage**: Supabase PostgreSQL (프로젝트 ID: cwpfvqhgjtrzogwqepxp)
+**Storage**: Supabase PostgreSQL (프로젝트 ID: <SUPABASE_PROJECT_ID>)
 **Testing**: Vitest — 마이그레이션 자체는 SQL, TypeScript 타입 정합성은 `npm run validate`로 검증
 **Target Platform**: Supabase Cloud (PostgreSQL 14+)
 **Project Type**: Web service (Next.js 15 App Router)
@@ -71,7 +71,7 @@ src/
 ```bash
 supabase init
 supabase login
-supabase link --project-ref cwpfvqhgjtrzogwqepxp
+supabase link --project-ref <SUPABASE_PROJECT_ID>
 ```
 
 - `supabase/config.toml` 생성

@@ -10,7 +10,7 @@
 **Decision**: Supabase CLI 로컬 마이그레이션 (`supabase init` + SQL 파일 + `supabase db push`)
 
 **Rationale**:
-- `package.json`의 `db:types` 스크립트가 Supabase CLI를 이미 사용 중 (`supabase gen types typescript --project-id cwpfvqhgjtrzogwqepxp`)
+- `package.json`의 `db:types` 스크립트가 Supabase CLI를 이미 사용 중 (`supabase gen types typescript --project-id <SUPABASE_PROJECT_ID>`)
 - 로컬 `supabase/migrations/` 디렉토리 방식은 git으로 스키마 이력 관리 가능 → Constitution V (Small, Verifiable, Reversible Delivery) 준수
 - `supabase db push`로 원격 DB에 멱등 적용 가능 (`IF NOT EXISTS` + `IF NOT EXISTS` 패턴)
 - 현재 `supabase/` 디렉토리 없음 → `supabase init`으로 초기화 필요
@@ -97,5 +97,5 @@
 
 **Rationale**:
 - 현재 `database.types.ts`는 빈 스캐폴드 (테이블 없음)
-- `supabase gen types typescript --project-id cwpfvqhgjtrzogwqepxp`가 원격 스키마를 읽어 TypeScript 타입 자동 생성
+- `supabase gen types typescript --project-id <SUPABASE_PROJECT_ID>`가 원격 스키마를 읽어 TypeScript 타입 자동 생성
 - `npm run validate` (type-check + lint)로 타입 정합성 검증

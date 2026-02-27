@@ -18,7 +18,7 @@
 **Purpose**: Supabase CLI 로컬 환경 설정. 원격 프로젝트 연결.
 
 - [x] T001 Run `supabase init` in repo root to create `supabase/config.toml`
-- [x] T002 Run `supabase link --project-ref cwpfvqhgjtrzogwqepxp` to link remote project
+- [x] T002 Run `supabase link --project-ref <SUPABASE_PROJECT_ID>` to link remote project
 
 **Checkpoint**: `supabase/config.toml` 생성 확인, 원격 연결 성공
 

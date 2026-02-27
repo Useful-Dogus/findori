@@ -6,7 +6,7 @@
 
 - Supabase CLI 설치: `npm i -g supabase` (또는 `brew install supabase/tap/supabase`)
 - 환경변수 설정 완료 (`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`) — #3 완료 전제
-- Supabase 프로젝트 ID: `cwpfvqhgjtrzogwqepxp`
+- Supabase 프로젝트 ID: `<SUPABASE_PROJECT_ID>`
 
 ## 로컬 설정 (최초 1회)
 
@@ -16,7 +16,7 @@ supabase init
 
 # 2. 원격 프로젝트와 연결 (로그인 필요)
 supabase login
-supabase link --project-ref cwpfvqhgjtrzogwqepxp
+supabase link --project-ref <SUPABASE_PROJECT_ID>
 ```
 
 ## 마이그레이션 적용
