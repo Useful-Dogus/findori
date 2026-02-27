@@ -587,73 +587,47 @@ EOF
     return 0
 }
 
-# Sync the AUTO-GENERATED block inside AGENTS.md from docs/agent-guidelines.md.
+# Ensure AGENTS.md references docs/agent-guidelines.md explicitly.
+# Codex does not support @import syntax, but as an LLM it will follow
+# the explicit instruction to read the referenced file.
 # Creates the file with the proper structure if missing.
 sync_agents_auto_generated() {
     local target_file="$1"
-
-    if [[ ! -f "$SHARED_GUIDELINES_FILE" ]]; then
-        log_warning "docs/agent-guidelines.md not found — skipping AGENTS.md sync"
-        return 1
-    fi
+    local ref_line="프로젝트 공통 지침은 \`docs/agent-guidelines.md\`를 읽어주세요."
 
     if [[ ! -f "$target_file" ]]; then
-        log_info "Creating new AGENTS.md with AUTO-GENERATED structure..."
+        log_info "Creating new AGENTS.md with reference structure..."
         local project_name
         project_name=$(basename "$REPO_ROOT")
-        {
-            echo "# $project_name — Codex Agent Guidelines"
-            echo ""
-            echo "<!-- AUTO-GENERATED FROM docs/agent-guidelines.md — DO NOT EDIT DIRECTLY -->"
-            echo "<!-- Run: .specify/scripts/bash/update-agent-context.sh codex to regenerate -->"
-            echo ""
-            echo "<!-- AUTO-GENERATED START -->"
-            cat "$SHARED_GUIDELINES_FILE"
-            echo "<!-- AUTO-GENERATED END -->"
-            echo ""
-            echo "<!-- CODEX-SPECIFIC START -->"
-            echo "<!-- CODEX-SPECIFIC END -->"
-        } > "$target_file"
-        log_success "Created new AGENTS.md with AUTO-GENERATED structure"
+        cat > "$target_file" << EOF
+# $project_name — Codex Agent Guidelines
+
+$ref_line
+
+<!-- CODEX-SPECIFIC START -->
+<!-- CODEX-SPECIFIC END -->
+EOF
+        log_success "Created new AGENTS.md with reference structure"
         return 0
     fi
 
-    if grep -q "<!-- AUTO-GENERATED START -->" "$target_file" && \
-       grep -q "<!-- AUTO-GENERATED END -->" "$target_file"; then
-        log_info "Syncing AUTO-GENERATED block in AGENTS.md..."
+    if ! grep -q "docs/agent-guidelines.md" "$target_file"; then
+        log_info "Adding docs/agent-guidelines.md reference to AGENTS.md..."
         local temp_file
         temp_file=$(mktemp)
-        local in_auto_block=false
+        local heading_added=false
         while IFS= read -r line || [[ -n "$line" ]]; do
-            if [[ "$line" == "<!-- AUTO-GENERATED START -->" ]]; then
-                echo "$line" >> "$temp_file"
-                cat "$SHARED_GUIDELINES_FILE" >> "$temp_file"
-                in_auto_block=true
-                continue
-            elif [[ "$line" == "<!-- AUTO-GENERATED END -->" ]]; then
-                echo "$line" >> "$temp_file"
-                in_auto_block=false
-                continue
-            elif [[ $in_auto_block == true ]]; then
-                continue  # skip old content — replaced by shared guidelines
-            fi
             echo "$line" >> "$temp_file"
+            if [[ $heading_added == false ]] && [[ "$line" =~ ^#[[:space:]] ]]; then
+                echo "" >> "$temp_file"
+                echo "$ref_line" >> "$temp_file"
+                heading_added=true
+            fi
         done < "$target_file"
         mv "$temp_file" "$target_file"
-        log_success "Synced AUTO-GENERATED block in AGENTS.md"
+        log_success "Added docs/agent-guidelines.md reference to AGENTS.md"
     else
-        log_warning "AGENTS.md does not have AUTO-GENERATED markers. Adding them..."
-        local temp_file
-        temp_file=$(mktemp)
-        {
-            cat "$target_file"
-            echo ""
-            echo "<!-- AUTO-GENERATED START -->"
-            cat "$SHARED_GUIDELINES_FILE"
-            echo "<!-- AUTO-GENERATED END -->"
-        } > "$temp_file"
-        mv "$temp_file" "$target_file"
-        log_success "Added AUTO-GENERATED block to AGENTS.md"
+        log_info "docs/agent-guidelines.md reference already present in AGENTS.md"
     fi
 
     return 0
