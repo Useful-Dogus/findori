@@ -1,0 +1,52 @@
+@import 'tailwindcss';
+
+/* Dark mode: class-based strategy */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* ── Brand & Background ── */
+  --color-background: #0f172a;
+  --color-surface: #1e293b;
+  --color-surface-raised: #334155;
+  --color-foreground: #f8fafc;
+  --color-muted: #94a3b8;
+  --color-border: #1e293b;
+
+  /* ── Accent colors ── */
+  --color-accent-blue: #3b82f6;
+  --color-accent-green: #22c55e;
+  --color-accent-red: #ef4444;
+  --color-accent-yellow: #eab308;
+  --color-accent-purple: #a855f7;
+  --color-accent-slate: #94a3b8;
+
+  /* ── Typography ── */
+  --font-sans: 'Pretendard Variable', 'Pretendard', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* ── Spacing & Radius ── */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+
+  /* ── Card dimensions ── */
+  --card-width: 390px;
+  --card-height: 692px;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
