@@ -8,6 +8,8 @@ Auto-generated from all feature plans. Last updated: 2026-02-27
 - Zod (003-env-secrets)
 - TypeScript 5.4+ / Node.js 20+ (타입 재생성) + Supabase CLI, `@supabase/supabase-js` ^2.0, `@supabase/ssr` ^0.5 (004-db-schema-migration)
 - Supabase PostgreSQL (프로젝트 ref는 환경변수로 주입) (004-db-schema-migration)
+- TypeScript 5.4+ / Node.js 20+ + Zod ^3 (기존 설치), Vitest (기존 테스트 환경) (005-cards-schema-types)
+- N/A — 이 이슈는 읽기/검증 전용. DB 쓰기 없음. (005-cards-schema-types)
 
 ## Project Structure
 
@@ -48,9 +50,9 @@ npm run db:types     # Supabase DB 타입 재생성
 - `getUser()` 사용, `getSession()` 금지
 
 ## Recent Changes
+- 005-cards-schema-types: Added TypeScript 5.4+ / Node.js 20+ + Zod ^3 (기존 설치), Vitest (기존 테스트 환경)
 - 004-db-schema-migration: Added TypeScript 5.4+ / Node.js 20+ (타입 재생성) + Supabase CLI, `@supabase/supabase-js` ^2.0, `@supabase/ssr` ^0.5
 - 003-env-secrets: Added Zod for environment variable validation
-- 036-unified-agent-context: Added Markdown, Bash + Claude Code (@-import 런타임 지원), Codex CLI (파일 임포트 없음 — 스크립트 동기화 필요)
 
 <!-- MANUAL ADDITIONS START -->
 ## Workflow Rules (Permanent)
