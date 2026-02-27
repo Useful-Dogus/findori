@@ -80,6 +80,9 @@ BOB_FILE="$REPO_ROOT/AGENTS.md"
 # Template file
 TEMPLATE_FILE="$REPO_ROOT/.specify/templates/agent-file-template.md"
 
+# Shared guidelines document (single source of truth)
+SHARED_GUIDELINES_FILE="$REPO_ROOT/docs/agent-guidelines.md"
+
 # Global variables for parsed plan data
 NEW_LANG=""
 NEW_FRAMEWORK=""
@@ -502,6 +505,161 @@ update_existing_agent_file() {
     return 0
 }
 #==============================================================================
+# Unified Agent Context Functions (036-unified-agent-context)
+#==============================================================================
+
+# Update docs/agent-guidelines.md as the single source of truth.
+# Routes the standard Active Technologies / Recent Changes logic to the shared doc.
+update_shared_guidelines() {
+    local current_date="$1"
+
+    if [[ ! -f "$SHARED_GUIDELINES_FILE" ]]; then
+        log_info "Creating docs/agent-guidelines.md..."
+        mkdir -p "$(dirname "$SHARED_GUIDELINES_FILE")"
+        cat > "$SHARED_GUIDELINES_FILE" << EOF
+# $(basename "$REPO_ROOT") Development Guidelines
+
+Auto-generated from all feature plans. Last updated: $current_date
+
+## Active Technologies
+
+## Project Structure
+
+\`\`\`text
+src/
+tests/
+\`\`\`
+
+## Commands
+
+## Code Style
+
+## Recent Changes
+
+<!-- MANUAL ADDITIONS START -->
+<!-- MANUAL ADDITIONS END -->
+EOF
+    fi
+
+    update_existing_agent_file "$SHARED_GUIDELINES_FILE" "$current_date"
+}
+
+# Ensure CLAUDE.md uses @import structure pointing to shared guidelines.
+# Creates the file if missing; adds @import line if not already present.
+ensure_claude_import() {
+    local target_file="$1"
+
+    if [[ ! -f "$target_file" ]]; then
+        log_info "Creating new CLAUDE.md with @import structure..."
+        local project_name
+        project_name=$(basename "$REPO_ROOT")
+        cat > "$target_file" << EOF
+# $project_name — Claude Code Guidelines
+
+@docs/agent-guidelines.md
+
+<!-- CLAUDE-SPECIFIC START -->
+<!-- CLAUDE-SPECIFIC END -->
+EOF
+        log_success "Created new CLAUDE.md with @import structure"
+        return 0
+    fi
+
+    if ! grep -q "^@docs/agent-guidelines.md" "$target_file"; then
+        log_info "Adding @docs/agent-guidelines.md import to CLAUDE.md..."
+        local temp_file
+        temp_file=$(mktemp)
+        local heading_added=false
+        while IFS= read -r line || [[ -n "$line" ]]; do
+            echo "$line" >> "$temp_file"
+            if [[ $heading_added == false ]] && [[ "$line" =~ ^#[[:space:]] ]]; then
+                echo "" >> "$temp_file"
+                echo "@docs/agent-guidelines.md" >> "$temp_file"
+                heading_added=true
+            fi
+        done < "$target_file"
+        mv "$temp_file" "$target_file"
+        log_success "Added @import to CLAUDE.md"
+    else
+        log_info "@docs/agent-guidelines.md import already present in CLAUDE.md"
+    fi
+
+    return 0
+}
+
+# Sync the AUTO-GENERATED block inside AGENTS.md from docs/agent-guidelines.md.
+# Creates the file with the proper structure if missing.
+sync_agents_auto_generated() {
+    local target_file="$1"
+
+    if [[ ! -f "$SHARED_GUIDELINES_FILE" ]]; then
+        log_warning "docs/agent-guidelines.md not found — skipping AGENTS.md sync"
+        return 1
+    fi
+
+    if [[ ! -f "$target_file" ]]; then
+        log_info "Creating new AGENTS.md with AUTO-GENERATED structure..."
+        local project_name
+        project_name=$(basename "$REPO_ROOT")
+        {
+            echo "# $project_name — Codex Agent Guidelines"
+            echo ""
+            echo "<!-- AUTO-GENERATED FROM docs/agent-guidelines.md — DO NOT EDIT DIRECTLY -->"
+            echo "<!-- Run: .specify/scripts/bash/update-agent-context.sh codex to regenerate -->"
+            echo ""
+            echo "<!-- AUTO-GENERATED START -->"
+            cat "$SHARED_GUIDELINES_FILE"
+            echo "<!-- AUTO-GENERATED END -->"
+            echo ""
+            echo "<!-- CODEX-SPECIFIC START -->"
+            echo "<!-- CODEX-SPECIFIC END -->"
+        } > "$target_file"
+        log_success "Created new AGENTS.md with AUTO-GENERATED structure"
+        return 0
+    fi
+
+    if grep -q "<!-- AUTO-GENERATED START -->" "$target_file" && \
+       grep -q "<!-- AUTO-GENERATED END -->" "$target_file"; then
+        log_info "Syncing AUTO-GENERATED block in AGENTS.md..."
+        local temp_file
+        temp_file=$(mktemp)
+        local in_auto_block=false
+        while IFS= read -r line || [[ -n "$line" ]]; do
+            if [[ "$line" == "<!-- AUTO-GENERATED START -->" ]]; then
+                echo "$line" >> "$temp_file"
+                cat "$SHARED_GUIDELINES_FILE" >> "$temp_file"
+                in_auto_block=true
+                continue
+            elif [[ "$line" == "<!-- AUTO-GENERATED END -->" ]]; then
+                echo "$line" >> "$temp_file"
+                in_auto_block=false
+                continue
+            elif [[ $in_auto_block == true ]]; then
+                continue  # skip old content — replaced by shared guidelines
+            fi
+            echo "$line" >> "$temp_file"
+        done < "$target_file"
+        mv "$temp_file" "$target_file"
+        log_success "Synced AUTO-GENERATED block in AGENTS.md"
+    else
+        log_warning "AGENTS.md does not have AUTO-GENERATED markers. Adding them..."
+        local temp_file
+        temp_file=$(mktemp)
+        {
+            cat "$target_file"
+            echo ""
+            echo "<!-- AUTO-GENERATED START -->"
+            cat "$SHARED_GUIDELINES_FILE"
+            echo "<!-- AUTO-GENERATED END -->"
+        } > "$temp_file"
+        mv "$temp_file" "$target_file"
+        log_success "Added AUTO-GENERATED block to AGENTS.md"
+    fi
+
+    return 0
+}
+
+#==============================================================================
 # Main Agent File Update Function
 #==============================================================================
 
@@ -520,7 +678,7 @@ update_agent_file() {
     project_name=$(basename "$REPO_ROOT")
     local current_date
     current_date=$(date +%Y-%m-%d)
-    
+
     # Create directory if it doesn't exist
     local target_dir
     target_dir=$(dirname "$target_file")
@@ -530,7 +688,37 @@ update_agent_file() {
             return 1
         fi
     fi
-    
+
+    # --- Unified agent context routing (036-unified-agent-context) ---
+    # CLAUDE.md: update shared guidelines doc, then ensure @import structure
+    if [[ "$target_file" == "$CLAUDE_FILE" ]]; then
+        if ! update_shared_guidelines "$current_date"; then
+            log_error "Failed to update shared guidelines"
+            return 1
+        fi
+        if ! ensure_claude_import "$target_file"; then
+            log_error "Failed to ensure Claude @import structure"
+            return 1
+        fi
+        log_success "Updated $agent_name (via shared guidelines + @import)"
+        return 0
+    fi
+
+    # AGENTS.md (Codex/opencode/amp/q/bob): update shared guidelines, then sync AUTO-GENERATED block
+    if [[ "$target_file" == "$AGENTS_FILE" ]]; then
+        if ! update_shared_guidelines "$current_date"; then
+            log_error "Failed to update shared guidelines"
+            return 1
+        fi
+        if ! sync_agents_auto_generated "$target_file"; then
+            log_error "Failed to sync AGENTS.md AUTO-GENERATED block"
+            return 1
+        fi
+        log_success "Updated $agent_name (via shared guidelines sync)"
+        return 0
+    fi
+    # --- End unified routing ---
+
     if [[ ! -f "$target_file" ]]; then
         # Create new file from template
         local temp_file
@@ -538,7 +726,7 @@ update_agent_file() {
             log_error "Failed to create temporary file"
             return 1
         }
-        
+
         if create_new_agent_file "$target_file" "$temp_file" "$project_name" "$current_date"; then
             if mv "$temp_file" "$target_file"; then
                 log_success "Created new $agent_name context file"
@@ -558,12 +746,12 @@ update_agent_file() {
             log_error "Cannot read existing file: $target_file"
             return 1
         fi
-        
+
         if [[ ! -w "$target_file" ]]; then
             log_error "Cannot write to existing file: $target_file"
             return 1
         fi
-        
+
         if update_existing_agent_file "$target_file" "$current_date"; then
             log_success "Updated existing $agent_name context file"
         else
@@ -571,7 +759,7 @@ update_agent_file() {
             return 1
         fi
     fi
-    
+
     return 0
 }
 
