@@ -24,6 +24,7 @@ build/
 # Generated
 next-env.d.ts
 src/types/database.types.ts
+tsconfig.tsbuildinfo
 
 # Logs
 *.log
