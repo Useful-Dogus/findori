@@ -1,0 +1,14 @@
+.next/
+node_modules/
+out/
+build/
+next-env.d.ts
+public/
+src/types/database.types.ts
+
+# Spec & docs directories (not app source)
+.claude/
+.codex/
+.specify/
+specs/
+docs/

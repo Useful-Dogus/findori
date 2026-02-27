@@ -1,5 +1,6 @@
 # macOS
 .DS_Store
+Thumbs.db
 
 # Editors
 .vscode/
@@ -8,7 +9,28 @@
 # Dependencies
 node_modules/
 
+# Next.js
+.next/
+out/
+build/
+
+# Env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Generated
+next-env.d.ts
+src/types/database.types.ts
+
+# Logs
+*.log
+npm-debug.log*
+
 # Local agent context (auto-generated)
 AGENTS.md
+CLAUDE.md
 *.tmp
 *.swp
