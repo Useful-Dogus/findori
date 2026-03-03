@@ -10,6 +10,8 @@ Auto-generated from all feature plans. Last updated: 2026-02-27
 - Supabase PostgreSQL (프로젝트 ref는 환경변수로 주입) (004-db-schema-migration)
 - TypeScript 5.4+ / Node.js 20+ + Zod ^3 (기존 설치), Vitest (기존 테스트 환경) (005-cards-schema-types)
 - N/A — 이 이슈는 읽기/검증 전용. DB 쓰기 없음. (005-cards-schema-types)
+- TypeScript 5.4+, Node.js 20+ + Next.js 15 (App Router, Route Handlers, Middleware), React 19, Zod 4, Vites (006-admin-auth-session)
+- 브라우저 쿠키 기반 세션 상태, 환경변수 기반 운영 비밀값 (`ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`) (006-admin-auth-session)
 
 ## Project Structure
 
@@ -50,9 +52,9 @@ npm run db:types     # Supabase DB 타입 재생성
 - `getUser()` 사용, `getSession()` 금지
 
 ## Recent Changes
+- 006-admin-auth-session: Added TypeScript 5.4+, Node.js 20+ + Next.js 15 (App Router, Route Handlers, Middleware), React 19, Zod 4, Vites
 - 005-cards-schema-types: Added TypeScript 5.4+ / Node.js 20+ + Zod ^3 (기존 설치), Vitest (기존 테스트 환경)
 - 004-db-schema-migration: Added TypeScript 5.4+ / Node.js 20+ (타입 재생성) + Supabase CLI, `@supabase/supabase-js` ^2.0, `@supabase/ssr` ^0.5
-- 003-env-secrets: Added Zod for environment variable validation
 
 <!-- MANUAL ADDITIONS START -->
 ## Workflow Rules (Permanent)
