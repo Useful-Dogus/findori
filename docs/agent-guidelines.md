@@ -14,6 +14,8 @@ Auto-generated from all feature plans. Last updated: 2026-02-27
 - 브라우저 쿠키 기반 세션 상태, 환경변수 기반 운영 비밀값 (`ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`) (006-admin-auth-session)
 - TypeScript 5.4+ / Node.js 20+ + Next.js 15 (App Router, Server Components, Route Handlers), React 19, Tailwind CSS v4, @supabase/supabase-js, @supabase/ssr, Zod v3 (007-admin-feed-review)
 - Supabase PostgreSQL (`feeds`, `issues` 테이블 — 읽기 전용) (007-admin-feed-review)
+- TypeScript 5.4+ / Node.js 20+ + `@anthropic-ai/sdk` (신규 추가), `rss-parser` (신규 추가), `@supabase/supabase-js` ^2.0, `zod` ^4.3 (011-cron-pipeline)
+- Supabase PostgreSQL — `pipeline_logs`(신규), `feeds`, `issues`, `media_sources` (기존) (011-cron-pipeline)
 
 ## Project Structure
 
@@ -59,6 +61,8 @@ npm run db:types     # Supabase DB 타입 재생성
 `docs/artifact-conventions.md`를 참조한다.
 
 ## Recent Changes
+- 007-admin-feed-review: Added TypeScript 5.4+ / Node.js 20+ + Next.js 15 (App Router, Server Components, Route Handlers), React 19, Tailwind CSS v4, @supabase/supabase-js, @supabase/ssr, Zod v3
+- 011-cron-pipeline: Added TypeScript 5.4+ / Node.js 20+ + `@anthropic-ai/sdk` (신규 추가), `rss-parser` (신규 추가), `@supabase/supabase-js` ^2.0, `zod` ^4.3
 - 007-admin-feed-review: Added TypeScript 5.4+ / Node.js 20+ + Next.js 15 (App Router, Server Components, Route Handlers), React 19, Tailwind CSS v4, @supabase/supabase-js, @supabase/ssr, Zod v3
 - 042-agent-artifact-conventions: 에이전트 산출물 작성 규칙 통합 (docs/artifact-conventions.md 추가)
 - 006-admin-auth-session: Added TypeScript 5.4+, Node.js 20+ + Next.js 15 (App Router, Route Handlers, Middleware), React 19, Zod 4, Vites
