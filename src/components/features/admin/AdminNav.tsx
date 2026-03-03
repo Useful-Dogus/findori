@@ -2,11 +2,12 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import type { Route } from 'next'
 import { usePathname, useRouter } from 'next/navigation'
 
 import { cn } from '@/lib/utils'
 
-const NAV_ITEMS = [
+const NAV_ITEMS: Array<{ href: Route; label: string }> = [
   { href: '/admin', label: '피드' },
   { href: '/admin/sources', label: '매체' },
 ]
