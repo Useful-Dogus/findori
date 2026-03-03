@@ -51,10 +51,15 @@ npm run db:types     # Supabase DB 타입 재생성
 - Supabase: `@supabase/ssr` 패키지 사용, `await cookies()` 필수 (Next.js 15)
 - `getUser()` 사용, `getSession()` 금지
 
+## Artifact Conventions
+
+산출물 작성 규칙(스펙·이슈·커밋·PR 형식, 번호 정렬 체계, 코드 품질 기준, hotfix 예외 흐름)은
+`docs/artifact-conventions.md`를 참조한다.
+
 ## Recent Changes
+- 042-agent-artifact-conventions: 에이전트 산출물 작성 규칙 통합 (docs/artifact-conventions.md 추가)
 - 006-admin-auth-session: Added TypeScript 5.4+, Node.js 20+ + Next.js 15 (App Router, Route Handlers, Middleware), React 19, Zod 4, Vites
 - 005-cards-schema-types: Added TypeScript 5.4+ / Node.js 20+ + Zod ^3 (기존 설치), Vitest (기존 테스트 환경)
-- 004-db-schema-migration: Added TypeScript 5.4+ / Node.js 20+ (타입 재생성) + Supabase CLI, `@supabase/supabase-js` ^2.0, `@supabase/ssr` ^0.5
 
 <!-- MANUAL ADDITIONS START -->
 ## Workflow Rules (Permanent)
