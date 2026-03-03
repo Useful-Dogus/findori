@@ -1,7 +1,9 @@
 # 에이전트 산출물 작성 규칙
 
 에이전트 종류(Claude Code, Codex 등)와 무관하게 적용되는 단일 산출물 작성 규칙.
-스펙·이슈·커밋·PR 형식, 번호 정렬 체계, 코드 품질 기준, hotfix 예외 흐름을 정의한다.
+이슈·커밋·PR 형식, 번호 정렬 체계, 코드 품질 기준, hotfix 예외 흐름을 정의한다.
+
+> **스펙 워크플로우**: 이 프로젝트는 speckit을 기본 워크플로우 도구로 사용한다. 파일 구조·단계 순서는 speckit 도구 정의를 따른다.
 
 > **소급 적용 없음**: 기존 머지된 커밋·PR은 이 규칙의 적용 대상이 아니다.
 > 새로 생성되는 산출물에만 적용된다.
@@ -32,32 +34,7 @@ GitHub #42  →  브랜치: 042-feature-name  →  specs/042-feature-name/
 
 ---
 
-## 2. 스펙 형식
-
-### 파일 경로 패턴
-
-```
-specs/NNN-<short-name>/
-├── spec.md        # /speckit.specify 산출물
-├── plan.md        # /speckit.plan 산출물
-├── research.md    # /speckit.plan 산출물
-├── data-model.md  # /speckit.plan 산출물
-├── quickstart.md  # /speckit.plan 산출물
-├── tasks.md       # /speckit.tasks 산출물
-└── checklists/    # 품질 게이트 체크리스트
-```
-
-### speckit 워크플로우
-
-```
-/speckit.specify  →  /speckit.plan  →  /speckit.tasks  →  /speckit.implement
-```
-
-각 단계는 순서대로 실행하며, 이전 단계의 산출물이 다음 단계의 입력이 된다.
-
----
-
-## 3. GitHub 이슈 형식
+## 2. GitHub 이슈 형식
 
 ### 제목
 
@@ -92,7 +69,7 @@ specs/NNN-<short-name>/
 
 ---
 
-## 4. 커밋 메시지 규칙
+## 3. 커밋 메시지 규칙
 
 ### Tier 1 — 이슈 구현 주 커밋
 
@@ -139,7 +116,7 @@ specs/NNN-<short-name>/
 
 ---
 
-## 5. PR 형식
+## 4. PR 형식
 
 ### 제목
 
@@ -182,7 +159,7 @@ hotfix 등 이슈가 없는 PR은 링크 키워드를 생략할 수 있다.
 
 ---
 
-## 6. 코드 품질 기준
+## 5. 코드 품질 기준
 
 에이전트 종류와 무관하게 코드 생성·수정 시 아래 4개 축을 기준으로 삼는다.
 
@@ -215,7 +192,7 @@ hotfix 등 이슈가 없는 PR은 링크 키워드를 생략할 수 있다.
 
 ---
 
-## 7. hotfix 예외 흐름
+## 6. hotfix 예외 흐름
 
 ### hotfix 정의
 
