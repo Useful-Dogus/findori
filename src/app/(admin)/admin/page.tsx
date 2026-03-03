@@ -1,10 +1,30 @@
-// TODO(#7): Admin 피드 목록/날짜별 이슈 검토 화면 구현
+import { FeedList } from '@/components/features/admin/FeedList'
+import { getAdminFeeds } from '@/lib/admin/feeds'
 
-export default function AdminPage() {
-  return (
-    <div className="p-6">
-      <h1 className="text-xl font-bold">Admin 대시보드</h1>
-      <p className="text-muted mt-2">피드 관리 화면 (구현 예정)</p>
-    </div>
-  )
+export default async function AdminPage() {
+  try {
+    const feeds = await getAdminFeeds()
+
+    return (
+      <section className="space-y-6">
+        <div className="space-y-2">
+          <p className="text-sm tracking-[0.2em] text-slate-400 uppercase">Feed Review</p>
+          <h1 className="text-3xl font-bold text-slate-50">날짜별 피드 검토</h1>
+          <p className="text-sm text-slate-300">
+            최신 피드부터 확인하고 날짜별 이슈 검토 화면으로 이동합니다.
+          </p>
+        </div>
+        <FeedList feeds={feeds} />
+      </section>
+    )
+  } catch {
+    return (
+      <section className="space-y-3">
+        <h1 className="text-3xl font-bold text-slate-50">날짜별 피드 검토</h1>
+        <div className="rounded-2xl bg-rose-950/40 px-5 py-4 text-sm text-rose-100">
+          피드 목록을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.
+        </div>
+      </section>
+    )
+  }
 }
