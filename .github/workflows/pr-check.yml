@@ -8,13 +8,13 @@ jobs:
   pr-check:
     runs-on: ubuntu-latest
     env:
-      NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: anon-key-placeholder-12345
-      SUPABASE_SERVICE_ROLE_KEY: service-role-placeholder-12345
-      ADMIN_PASSWORD: admin-password-placeholder
-      ADMIN_SESSION_SECRET: 12345678901234567890123456789012
-      ANTHROPIC_API_KEY: sk-ant-placeholder-for-ci
-      CRON_SECRET: cron-secret-placeholder
+      NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co"
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: "anon-key-placeholder-12345"
+      SUPABASE_SERVICE_ROLE_KEY: "service-role-placeholder-12345"
+      ADMIN_PASSWORD: "admin-password-placeholder"
+      ADMIN_SESSION_SECRET: "ci-admin-session-secret-placeholder-1234567890"
+      ANTHROPIC_API_KEY: "sk-ant-placeholder-for-ci"
+      CRON_SECRET: "cron-secret-placeholder"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
