@@ -1,13 +1,23 @@
-// TODO(#6): Admin 인증/세션/미들웨어 구현
+import AdminLoginForm from './AdminLoginForm'
 
-export default function AdminLoginPage() {
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="bg-surface-raised w-full max-w-sm rounded-xl p-8">
-        <h1 className="mb-6 text-center text-xl font-bold">Admin 로그인</h1>
-        {/* TODO(#6): 비밀번호 입력 폼 + POST /api/admin/auth/login */}
-        <p className="text-muted text-center text-sm">로그인 폼 구현 예정</p>
-      </div>
-    </div>
-  )
+const STATUS_MESSAGE: Record<string, string> = {
+  expired: '세션이 만료되어 다시 로그인해야 합니다.',
+  logged_out: '로그아웃되었습니다.',
+}
+
+type AdminLoginPageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>
+}
+
+export default async function AdminLoginPage({ searchParams }: AdminLoginPageProps) {
+  const resolvedSearchParams = searchParams ? await searchParams : {}
+
+  const nextParam = resolvedSearchParams.next
+  const reasonParam = resolvedSearchParams.reason
+
+  const nextPath = typeof nextParam === 'string' ? nextParam : '/admin'
+  const statusMessage =
+    typeof reasonParam === 'string' ? (STATUS_MESSAGE[reasonParam] ?? null) : null
+
+  return <AdminLoginForm nextPath={nextPath} statusMessage={statusMessage} />
 }
