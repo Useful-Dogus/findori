@@ -41,6 +41,7 @@ npm run dev          # 개발 서버 (Turbopack)
 npm run build        # 프로덕션 빌드
 npm run validate     # type-check + lint + format:check
 npm run test         # Vitest (CI용)
+npm run pr:check     # PR 공통 게이트 (validate + test + build)
 npm run db:types     # Supabase DB 타입 재생성
 ```
 
@@ -67,7 +68,7 @@ npm run db:types     # Supabase DB 타입 재생성
 ## Workflow Rules (Permanent)
 
 - **Commit policy**: 이슈 브랜치에 직접 커밋. `Co-Authored-By: Claude` 또는 "클로드코드 협업자" 라인 절대 금지.
-- **After implement**: 품질 게이트(`npm run validate` + `npm run test`) 통과 후 이슈 브랜치에 커밋 → GitHub PR 생성 후 URL 보고.
+- **After implement**: 품질 게이트(`npm run pr:check`) 통과 후 이슈 브랜치에 커밋 → GitHub PR 생성 후 URL 보고.
 
 ## Security Rules For Public Repo (Permanent)
 
