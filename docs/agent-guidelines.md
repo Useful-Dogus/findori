@@ -12,6 +12,8 @@ Auto-generated from all feature plans. Last updated: 2026-02-27
 - N/A — 이 이슈는 읽기/검증 전용. DB 쓰기 없음. (005-cards-schema-types)
 - TypeScript 5.4+, Node.js 20+ + Next.js 15 (App Router, Route Handlers, Middleware), React 19, Zod 4, Vites (006-admin-auth-session)
 - 브라우저 쿠키 기반 세션 상태, 환경변수 기반 운영 비밀값 (`ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`) (006-admin-auth-session)
+- TypeScript 5.4+ / Node.js 20+ + Next.js 15 (App Router, Server Components, Route Handlers), React 19, Tailwind CSS v4, @supabase/supabase-js, @supabase/ssr, Zod v3 (007-admin-feed-review)
+- Supabase PostgreSQL (`feeds`, `issues` 테이블 — 읽기 전용) (007-admin-feed-review)
 
 ## Project Structure
 
@@ -57,15 +59,15 @@ npm run db:types     # Supabase DB 타입 재생성
 `docs/artifact-conventions.md`를 참조한다.
 
 ## Recent Changes
+- 007-admin-feed-review: Added TypeScript 5.4+ / Node.js 20+ + Next.js 15 (App Router, Server Components, Route Handlers), React 19, Tailwind CSS v4, @supabase/supabase-js, @supabase/ssr, Zod v3
 - 042-agent-artifact-conventions: 에이전트 산출물 작성 규칙 통합 (docs/artifact-conventions.md 추가)
 - 006-admin-auth-session: Added TypeScript 5.4+, Node.js 20+ + Next.js 15 (App Router, Route Handlers, Middleware), React 19, Zod 4, Vites
-- 005-cards-schema-types: Added TypeScript 5.4+ / Node.js 20+ + Zod ^3 (기존 설치), Vitest (기존 테스트 환경)
 
 <!-- MANUAL ADDITIONS START -->
 ## Workflow Rules (Permanent)
 
 - **Commit policy**: 이슈 브랜치에 직접 커밋. `Co-Authored-By: Claude` 또는 "클로드코드 협업자" 라인 절대 금지.
-- **After implement**: 품질 게이트(`npm run validate` + `npm run test`) 통과 후 이슈 브랜치에 커밋 → GitHub PR 생성 후 URL 보고.
+- **After implement**: 품질 게이트(`npm run validate` + `npm run test` + 필요 시 `npm run build`) 통과 후 이슈 브랜치에 커밋 → GitHub PR 생성 후 URL 보고.
 
 ## Security Rules For Public Repo (Permanent)
 
