@@ -145,6 +145,42 @@ export type Database = {
         }
         Relationships: []
       }
+      pipeline_logs: {
+        Row: {
+          articles_collected: number
+          completed_at: string | null
+          date: string
+          errors: Json
+          id: string
+          issues_created: number
+          started_at: string
+          status: string
+          triggered_by: string
+        }
+        Insert: {
+          articles_collected?: number
+          completed_at?: string | null
+          date: string
+          errors?: Json
+          id?: string
+          issues_created?: number
+          started_at?: string
+          status?: string
+          triggered_by?: string
+        }
+        Update: {
+          articles_collected?: number
+          completed_at?: string | null
+          date?: string
+          errors?: Json
+          id?: string
+          issues_created?: number
+          started_at?: string
+          status?: string
+          triggered_by?: string
+        }
+        Relationships: []
+      }
       tags: {
         Row: {
           created_at: string

@@ -236,7 +236,12 @@ fi
 
 # Determine branch number
 if [ -z "$BRANCH_NUMBER" ]; then
-    if [ "$HAS_GIT" = true ]; then
+    # Check if description starts with a GitHub issue number (#N)
+    # e.g., "#11 Cron 파이프라인 엔드포인트 구현" → 11
+    ISSUE_NUM=$(echo "$FEATURE_DESCRIPTION" | grep -oE '^#([0-9]+)' | grep -oE '[0-9]+' | head -1)
+    if [ -n "$ISSUE_NUM" ]; then
+        BRANCH_NUMBER="$ISSUE_NUM"
+    elif [ "$HAS_GIT" = true ]; then
         # Check existing branches on remotes
         BRANCH_NUMBER=$(check_existing_branches "$SPECS_DIR")
     else
