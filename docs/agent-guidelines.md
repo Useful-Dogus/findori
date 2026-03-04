@@ -16,6 +16,8 @@ Auto-generated from all feature plans. Last updated: 2026-02-27
 - Supabase PostgreSQL (`feeds`, `issues` 테이블 — 읽기 전용) (007-admin-feed-review)
 - TypeScript 5.4+ / Node.js 20+ + `@anthropic-ai/sdk` (신규 추가), `rss-parser` (신규 추가), `@supabase/supabase-js` ^2.0, `zod` ^4.3 (011-cron-pipeline)
 - Supabase PostgreSQL — `pipeline_logs`(신규), `feeds`, `issues`, `media_sources` (기존) (011-cron-pipeline)
+- TypeScript 5.4+, Node.js 20+ + Next.js 15 (App Router, Route Handlers), React 19, Tailwind CSS v4, @supabase/supabase-js ^2.0, @supabase/ssr ^0.5, Zod v3 (008-admin-issue-review)
+- Supabase PostgreSQL — `issues` 테이블 (`status`, `cards_data` 컬럼 업데이트) (008-admin-issue-review)
 
 ## Project Structure
 
@@ -61,17 +63,16 @@ npm run db:types     # Supabase DB 타입 재생성
 `docs/artifact-conventions.md`를 참조한다.
 
 ## Recent Changes
+- 008-admin-issue-review: Added TypeScript 5.4+, Node.js 20+ + Next.js 15 (App Router, Route Handlers), React 19, Tailwind CSS v4, @supabase/supabase-js ^2.0, @supabase/ssr ^0.5, Zod v3
 - 007-admin-feed-review: Added TypeScript 5.4+ / Node.js 20+ + Next.js 15 (App Router, Server Components, Route Handlers), React 19, Tailwind CSS v4, @supabase/supabase-js, @supabase/ssr, Zod v3
 - 011-cron-pipeline: Added TypeScript 5.4+ / Node.js 20+ + `@anthropic-ai/sdk` (신규 추가), `rss-parser` (신규 추가), `@supabase/supabase-js` ^2.0, `zod` ^4.3
-- 007-admin-feed-review: Added TypeScript 5.4+ / Node.js 20+ + Next.js 15 (App Router, Server Components, Route Handlers), React 19, Tailwind CSS v4, @supabase/supabase-js, @supabase/ssr, Zod v3
-- 042-agent-artifact-conventions: 에이전트 산출물 작성 규칙 통합 (docs/artifact-conventions.md 추가)
-- 006-admin-auth-session: Added TypeScript 5.4+, Node.js 20+ + Next.js 15 (App Router, Route Handlers, Middleware), React 19, Zod 4, Vites
 
 <!-- MANUAL ADDITIONS START -->
 ## Workflow Rules (Permanent)
 
 - **Commit policy**: 이슈 브랜치에 직접 커밋. `Co-Authored-By: Claude` 또는 "클로드코드 협업자" 라인 절대 금지.
 - **After implement**: 품질 게이트(`npm run validate` + `npm run test` + 필요 시 `npm run build`) 통과 후 이슈 브랜치에 커밋 → GitHub PR 생성 후 URL 보고.
+- **Feature branch/spec numbering**: `/speckit.specify` 또는 브랜치/스펙 생성 시 **반드시 GitHub 이슈 번호를 사용**한다. 이슈 제목이나 설명에 `#N` 형식으로 이슈 번호가 명시된 경우 해당 번호를 3자리 0-패딩으로 변환하여 사용한다 (예: `#8` → `008`, `#42` → `042`). `create-new-feature.sh`의 `--number` 인자에는 이 이슈 번호를 전달한다. 도구 내부의 자동 증분 번호(001, 002…)를 절대 사용하지 않는다.
 
 ## Security Rules For Public Repo (Permanent)
 
