@@ -73,6 +73,9 @@ npm run db:types     # Supabase DB 타입 재생성
 - **Commit policy**: 이슈 브랜치에 직접 커밋. `Co-Authored-By: Claude` 또는 "클로드코드 협업자" 라인 절대 금지.
 - **After implement**: 품질 게이트(`npm run validate` + `npm run test` + 필요 시 `npm run build`) 통과 후 이슈 브랜치에 커밋 → GitHub PR 생성 후 URL 보고.
 - **Feature branch/spec numbering**: `/speckit.specify` 또는 브랜치/스펙 생성 시 **반드시 GitHub 이슈 번호를 사용**한다. 이슈 제목이나 설명에 `#N` 형식으로 이슈 번호가 명시된 경우 해당 번호를 3자리 0-패딩으로 변환하여 사용한다 (예: `#8` → `008`, `#42` → `042`). `create-new-feature.sh`의 `--number` 인자에는 이 이슈 번호를 전달한다. 도구 내부의 자동 증분 번호(001, 002…)를 절대 사용하지 않는다.
+- **Worktree discipline**: 사용자가 특정 worktree 경로를 지정하면 모든 조회·수정·검증·커밋·PR 작업은 반드시 그 worktree 루트에서 수행한다. 저장소 루트나 다른 worktree에서 임시 구현 후 옮기는 방식은 금지한다.
+- **PR title format**: PR 제목은 반드시 `[Issue #N] <설명>` 형식을 사용한다. `Issue` 단수형을 사용하고, `Issues`, `#NNN`, 자유 형식 제목을 사용하지 않는다.
+- **PR body format**: PR 본문은 반드시 `## Summary`, `## Test plan`, `Closes #N`을 포함한다. 웹 애플리케이션 코드 변경에서는 `npm run validate`, `npm run test`, `npm run build` 실행 결과를 각각 명시하고, 실패 시에도 실제 실행 결과와 실패 사유를 그대로 적는다.
 
 ## Security Rules For Public Repo (Permanent)
 
