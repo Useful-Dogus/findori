@@ -4,6 +4,7 @@ import type { Database, TablesInsert } from '@/types/database.types'
 import type {
   PipelineError,
   PipelineLogRow,
+  PipelineSourceStat,
   PipelineStatus,
   PipelineTrigger,
 } from '@/types/pipeline'
@@ -111,6 +112,8 @@ export async function finishPipelineRun(
     status: Exclude<PipelineStatus, 'running'>
     completedAt?: Date
     articlesCollected: number
+    articlesRaw: number
+    sourceStats: PipelineSourceStat[]
     issuesCreated: number
     errors: PipelineError[]
   },
@@ -123,6 +126,8 @@ export async function finishPipelineRun(
       status: params.status,
       completed_at: completedAt.toISOString(),
       articles_collected: params.articlesCollected,
+      articles_raw: params.articlesRaw,
+      source_stats: params.sourceStats,
       issues_created: params.issuesCreated,
       errors: serializeErrors(params.errors),
     })

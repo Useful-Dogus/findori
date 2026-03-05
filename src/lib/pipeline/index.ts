@@ -96,6 +96,8 @@ export async function runPipeline(
       status,
       completedAt,
       articlesCollected: collected.articles.length,
+      articlesRaw: collected.articlesRaw,
+      sourceStats: collected.sourceStats,
       issuesCreated: insertedIssues.length,
       errors,
     })
@@ -108,6 +110,8 @@ export async function runPipeline(
         date,
         status,
         articles_collected: collected.articles.length,
+        articles_raw: collected.articlesRaw,
+        source_stats: collected.sourceStats,
         issues_created: insertedIssues.length,
         errors,
         duration_ms: completedAt.getTime() - startedAt.getTime(),
@@ -124,6 +128,8 @@ export async function runPipeline(
       status: 'failed',
       completedAt,
       articlesCollected: 0,
+      articlesRaw: 0,
+      sourceStats: [],
       issuesCreated: 0,
       errors: [pipelineError],
     })

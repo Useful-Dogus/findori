@@ -94,4 +94,45 @@ describe('GET /api/admin/pipeline/logs', () => {
       limit: 20,
     })
   })
+
+  // T012: US3 — response includes source_stats and articles_raw
+  it('returns source_stats and articles_raw in log entries', async () => {
+    requireAdminSessionMock.mockResolvedValue({
+      valid: true,
+      payload: { sub: 'admin', iat: 1, exp: 2 },
+    })
+    listPipelineLogsMock.mockResolvedValue({
+      logs: [
+        {
+          id: 'log-2',
+          date: '2026-03-05',
+          status: 'success',
+          triggered_by: 'cron',
+          started_at: '2026-03-05T01:00:00.000Z',
+          completed_at: '2026-03-05T01:05:00.000Z',
+          articles_collected: 5,
+          articles_raw: 7,
+          source_stats: [
+            { source: 'Source One', count: 4 },
+            { source: 'Source Two', count: 3 },
+          ],
+          issues_created: 2,
+          errors: [],
+        },
+      ],
+      total: 1,
+    })
+
+    const response = await GET(new Request('http://localhost/api/admin/pipeline/logs'))
+
+    expect(response.status).toBe(200)
+    const body = await response.json()
+    expect(body.logs[0]).toMatchObject({
+      articles_raw: 7,
+      source_stats: [
+        { source: 'Source One', count: 4 },
+        { source: 'Source Two', count: 3 },
+      ],
+    })
+  })
 })
