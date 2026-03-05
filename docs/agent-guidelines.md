@@ -18,6 +18,8 @@ Auto-generated from all feature plans. Last updated: 2026-02-27
 - Supabase PostgreSQL — `pipeline_logs`(신규), `feeds`, `issues`, `media_sources` (기존) (011-cron-pipeline)
 - TypeScript 5.4+, Node.js 20+ + Next.js 15 (App Router, Route Handlers), React 19, Tailwind CSS v4, @supabase/supabase-js ^2.0, @supabase/ssr ^0.5, Zod v3 (008-admin-issue-review)
 - Supabase PostgreSQL — `issues` 테이블 (`status`, `cards_data` 컬럼 업데이트) (008-admin-issue-review)
+- TypeScript 5.4+ / Node.js 20+ + `rss-parser` (기존 설치), `@supabase/supabase-js` ^2.0, `zod` ^4.3 (012-news-collector)
+- Supabase PostgreSQL — `pipeline_logs`(컬럼 추가), `media_sources`(읽기 전용) (012-news-collector)
 
 ## Project Structure
 
@@ -63,9 +65,9 @@ npm run db:types     # Supabase DB 타입 재생성
 `docs/artifact-conventions.md`를 참조한다.
 
 ## Recent Changes
+- 012-news-collector: Added TypeScript 5.4+ / Node.js 20+ + `rss-parser` (기존 설치), `@supabase/supabase-js` ^2.0, `zod` ^4.3
 - 008-admin-issue-review: Added TypeScript 5.4+, Node.js 20+ + Next.js 15 (App Router, Route Handlers), React 19, Tailwind CSS v4, @supabase/supabase-js ^2.0, @supabase/ssr ^0.5, Zod v3
 - 007-admin-feed-review: Added TypeScript 5.4+ / Node.js 20+ + Next.js 15 (App Router, Server Components, Route Handlers), React 19, Tailwind CSS v4, @supabase/supabase-js, @supabase/ssr, Zod v3
-- 011-cron-pipeline: Added TypeScript 5.4+ / Node.js 20+ + `@anthropic-ai/sdk` (신규 추가), `rss-parser` (신규 추가), `@supabase/supabase-js` ^2.0, `zod` ^4.3
 
 <!-- MANUAL ADDITIONS START -->
 ## Workflow Rules (Permanent)

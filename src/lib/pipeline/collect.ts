@@ -2,7 +2,12 @@ import Parser from 'rss-parser'
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 import type { Database } from '@/types/database.types'
-import type { CollectedArticle, PipelineError, PipelineSource } from '@/types/pipeline'
+import type {
+  CollectedArticle,
+  PipelineError,
+  PipelineSource,
+  PipelineSourceStat,
+} from '@/types/pipeline'
 
 const RSS_TIMEOUT_MS = 30_000
 
@@ -84,6 +89,8 @@ export async function collectArticles(
 ): Promise<{
   articles: CollectedArticle[]
   errors: PipelineError[]
+  sourceStats: PipelineSourceStat[]
+  articlesRaw: number
 }> {
   const sources = await getActiveSources(client)
   const parser =
@@ -124,5 +131,11 @@ export async function collectArticles(
     return true
   })
 
-  return { articles, errors }
+  const failedSources = new Set(errors.map((e) => e.source))
+  const sourceStats: PipelineSourceStat[] = sources
+    .map((source, i) => ({ source: source.name, count: perSourceResults[i].length }))
+    .filter((stat) => !failedSources.has(stat.source))
+  const articlesRaw = perSourceResults.flat().length
+
+  return { articles, errors, sourceStats, articlesRaw }
 }

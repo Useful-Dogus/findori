@@ -148,33 +148,39 @@ export type Database = {
       pipeline_logs: {
         Row: {
           articles_collected: number
+          articles_raw: number
           completed_at: string | null
           date: string
           errors: Json
           id: string
           issues_created: number
+          source_stats: Json
           started_at: string
           status: string
           triggered_by: string
         }
         Insert: {
           articles_collected?: number
+          articles_raw?: number
           completed_at?: string | null
           date: string
           errors?: Json
           id?: string
           issues_created?: number
+          source_stats?: Json
           started_at?: string
           status?: string
           triggered_by?: string
         }
         Update: {
           articles_collected?: number
+          articles_raw?: number
           completed_at?: string | null
           date?: string
           errors?: Json
           id?: string
           issues_created?: number
+          source_stats?: Json
           started_at?: string
           status?: string
           triggered_by?: string

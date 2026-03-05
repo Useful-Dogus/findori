@@ -9,6 +9,11 @@ export type PipelineError = {
   message: string
 }
 
+export type PipelineSourceStat = {
+  source: string
+  count: number
+}
+
 export type PipelineSource = Tables<'media_sources'>
 
 export type CollectedArticle = {
@@ -42,6 +47,8 @@ export type PipelineExecutionSummary = {
   date: string
   status: Exclude<PipelineStatus, 'running'>
   articles_collected: number
+  articles_raw: number
+  source_stats: PipelineSourceStat[]
   issues_created: number
   errors: PipelineError[]
   duration_ms: number

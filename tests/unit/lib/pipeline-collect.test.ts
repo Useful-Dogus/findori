@@ -97,6 +97,18 @@ describe('collectArticles', () => {
       'https://news.test/article-1',
       'https://news.test/article-2',
     ])
+
+    // T007: sourceStats and articlesRaw
+    // source-one: 1 same-day article (article-old filtered), source-two: 2 same-day articles (article-1 + article-2)
+    expect(result.sourceStats).toEqual([
+      { source: 'Source One', count: 1 },
+      { source: 'Source Two', count: 2 },
+    ])
+    expect(result.articlesRaw).toBe(3)
+    // dedup: article-1 appears in both sources, so articles.length < articlesRaw
+    expect(result.articles.length).toBeLessThan(result.articlesRaw)
+    // articlesRaw === sum of sourceStats counts
+    expect(result.articlesRaw).toBe(result.sourceStats.reduce((sum, stat) => sum + stat.count, 0))
   })
 
   it('keeps successful articles when one RSS source fails', async () => {
@@ -130,5 +142,12 @@ describe('collectArticles', () => {
         message: 'RSS fetch timeout',
       },
     ])
+
+    // T009: US2 — failed source excluded from sourceStats
+    expect(result.sourceStats).toEqual([{ source: 'Source Two', count: 1 }])
+    expect(result.sourceStats.find((s) => s.source === 'Source One')).toBeUndefined()
+    // articlesRaw = sum of successful sources only (failed source returned [])
+    expect(result.articlesRaw).toBe(1)
+    expect(result.articlesRaw).toBe(result.sourceStats.reduce((sum, stat) => sum + stat.count, 0))
   })
 })
