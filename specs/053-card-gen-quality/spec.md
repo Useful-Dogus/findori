@@ -1,11 +1,42 @@
 # Feature Specification: 카드 생성 품질 개선 — 투자자 내러티브 + 비주얼 디자인 가이드
 
-**Feature Branch**: `013-claude-card-gen` (enhancement commit)
+**Feature Branch**: `053-card-gen-quality`
 **Spec Directory**: `053-card-gen-quality`
 **GitHub Issue**: #53
 **Created**: 2026-03-06
 **Status**: Draft
 **Input**: 투자자 관점("왜 올랐나?" "더 오를까?") 내러티브 중심의 카드 생성 + 분위기 반영 비주얼 디자인 가이드
+
+---
+
+## 아키텍처 범위 (중요)
+
+**이 이슈는 `buildSystemPrompt()` 텍스트 개선에 국한된다. 렌더링 아키텍처는 변경하지 않는다.**
+
+### MVP 카드 렌더링 방식: 데이터 기반 (JSON → React 컴포넌트)
+
+```
+파이프라인 실행
+  └→ Claude API (tool_use)
+       └→ cards_data JSON 반환 (hex 색상값 포함)
+            └→ DB 저장 (issues.cards_data JSONB)
+                 └→ React 컴포넌트가 visual.* hex값을 CSS gradient로 렌더링
+```
+
+- **Claude가 생성하는 것**: `cards_data` JSON — 텍스트, `visual.bg_from/bg_via/bg_to/accent` hex 색상값
+- **Claude가 생성하지 않는 것**: HTML, CSS, 이미지 파일, React 코드
+- **React가 하는 것**: JSON의 hex값을 읽어 고정된 컴포넌트 구조에 CSS로 적용
+
+### 이 이슈 (#53) 의 범위
+
+| 범위 내 ✅ | 범위 외 ❌ |
+|------------|------------|
+| `buildSystemPrompt()` 내 내러티브 흐름 가이드 추가 | React 컴포넌트 구조 변경 |
+| `buildSystemPrompt()` 내 hex 색상 팔레트 예시 추가 | Claude가 HTML/CSS 생성 |
+| 카드 텍스트 품질 가이드 강화 | 카드 뉴스 스크린샷/이미지 저장 |
+| `generateIssues()` / `generateContextIssues()` 동작 유지 | S3/Storage 이미지 인프라 |
+
+---
 
 ## 배경
 

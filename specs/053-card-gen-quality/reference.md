@@ -4,6 +4,8 @@
 **Created**: 2026-03-06
 **Purpose**: 파이프라인 system prompt 개선을 위한 설계 인사이트 정리
 
+> **아키텍처 노트**: 이 참고자료에서 "디자인 적용", "Design Skills" 표현은 Claude가 HTML/CSS/이미지를 생성한다는 의미가 아니다. Claude는 `cards_data` JSON 내 `visual.*` hex 색상값을 선택하는 것이며, 실제 렌더링은 React 컴포넌트가 담당한다.
+
 ---
 
 ## 1. 사례 개요
@@ -29,9 +31,9 @@
 "왜 올랐나?" "더 오를까?" 궁금해할 독자를 위해 편집
 → 투자자 관점의 스토리라인으로 카드 배열
 
-[5단계] 디자인 적용
-Claude 자체 Design Skills 활용
-→ 종목 분위기에 맞는 색상 팔레트 선택
+[5단계] 비주얼 팔레트 선택
+Claude가 종목 분위기(상승/하락/중립)를 판단하여
+→ cards_data의 visual.* hex 색상값 결정 (React 컴포넌트가 이 값으로 CSS gradient 렌더링)
 ```
 
 ---
