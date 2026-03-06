@@ -37,6 +37,15 @@ export type GeneratedIssueDraft = {
   channel: string
 }
 
+export type ContextMarketData = {
+  entityId: string
+  entityName: string
+  entityType: 'index' | 'currency'
+  value: string
+  change: string
+  changePercent: string
+}
+
 export type PipelineLogRow = Tables<'pipeline_logs'>
 
 export type PipelineLogErrorJson = Json
