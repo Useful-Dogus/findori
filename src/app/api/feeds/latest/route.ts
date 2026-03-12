@@ -1,8 +1,12 @@
-// TODO(#15): 실제 DB 조회로 교체
-
 import { NextResponse } from 'next/server'
 
+import { getLatestPublishedDate } from '@/lib/public/feeds'
+
 export async function GET() {
-  // Stub: latest published feed date
-  return NextResponse.json({ date: null }, { status: 200 })
+  try {
+    const date = await getLatestPublishedDate()
+    return NextResponse.json({ date }, { status: 200 })
+  } catch {
+    return NextResponse.json({ error: 'internal_error' }, { status: 500 })
+  }
 }
