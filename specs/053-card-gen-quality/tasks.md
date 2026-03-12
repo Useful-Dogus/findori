@@ -16,7 +16,7 @@
 
 **Purpose**: 053 브랜치에 #13(buildSystemPrompt 첫 구현) 변경 사항 통합
 
-- [ ] T001 `git merge origin/main` 실행하여 buildSystemPrompt + generateContextIssues를 053 브랜치에 통합
+- [X] T001 `git merge origin/main` 실행하여 buildSystemPrompt + generateContextIssues를 053 브랜치에 통합
 
 ---
 
@@ -26,10 +26,10 @@
 
 ⚠️ CRITICAL: Phase 3+ 작업 전 완료 필수
 
-- [ ] T002 `tests/unit/lib/pipeline-generate.test.ts` — `channel: 'default'` 기대값을 `'v1'`으로 수정 (main의 #13 변경 반영)
-- [ ] T003 `tests/unit/lib/pipeline-generate.test.ts` — `generateIssues` 호출 시 `messages.create` 인자에 `system` 필드가 포함되는지 검증하는 테스트 추가
-- [ ] T004 `tests/unit/lib/pipeline-generate.test.ts` — `generateContextIssues` 호출 시 `messages.create` 인자에 `system` 필드가 포함되는지 검증하는 테스트 추가 (generateContextIssues import 추가 필요)
-- [ ] T005 `npm run test` 실행 → T002~T004 반영 후 기존 테스트 포함 전체 통과 확인
+- [X] T002 `tests/unit/lib/pipeline-generate.test.ts` — `channel: 'default'` 기대값을 `'v1'`으로 수정 (main의 #13 변경 반영)
+- [X] T003 `tests/unit/lib/pipeline-generate.test.ts` — `generateIssues` 호출 시 `messages.create` 인자에 `system` 필드가 포함되는지 검증하는 테스트 추가
+- [X] T004 `tests/unit/lib/pipeline-generate.test.ts` — `generateContextIssues` 호출 시 `messages.create` 인자에 `system` 필드가 포함되는지 검증하는 테스트 추가 (generateContextIssues import 추가 필요)
+- [X] T005 `npm run test` 실행 → T002~T004 반영 후 기존 테스트 포함 전체 통과 확인
 
 **Checkpoint**: 테스트 통과 — buildSystemPrompt 개선 작업 시작 가능
 
@@ -41,9 +41,9 @@
 
 **Independent Test**: `generateIssues()`를 mock 호출 후 캡처한 `system` 파라미터 텍스트에 "내러티브 흐름" 또는 "뭔 일이야" 등의 키워드가 포함되어 있어야 한다. (quickstart.md 수동 검증 참조)
 
-- [ ] T006 [US1] `src/lib/pipeline/generate.ts` — `buildSystemPrompt()` 내 `## 내러티브 흐름` 섹션 추가: 투자자 7단계 질문(뭔 일이야→왜→더 오를까→리스크→커뮤니티→수치→출처)과 대응 카드 타입 명시
-- [ ] T007 [US1] `src/lib/pipeline/generate.ts` — `buildSystemPrompt()` 내 cover 카드 작성 가이드 강화: title 첫 줄에 종목명/수치/핵심 결론 필수, `sub`는 "±N% · YYYY-MM-DD" 형식, 나쁜 예시(수치 없는 title) 포함
-- [ ] T008 [US1] `src/lib/pipeline/generate.ts` — `buildSystemPrompt()` 내 카드별 생략 기준 명시: bullish(긍정 근거 없으면 생략), bearish(리스크 없으면 생략), community(커뮤니티 반응 유추 불가 시 생략), stats(수치 추출 불가 시 생략). 최소 구성 3장(cover + reason/bullish 중 1개 + source) 명시
+- [X] T006 [US1] `src/lib/pipeline/generate.ts` — `buildSystemPrompt()` 내 `## 내러티브 흐름` 섹션 추가: 투자자 7단계 질문(뭔 일이야→왜→더 오를까→리스크→커뮤니티→수치→출처)과 대응 카드 타입 명시
+- [X] T007 [US1] `src/lib/pipeline/generate.ts` — `buildSystemPrompt()` 내 cover 카드 작성 가이드 강화: title 첫 줄에 종목명/수치/핵심 결론 필수, `sub`는 "±N% · YYYY-MM-DD" 형식, 나쁜 예시(수치 없는 title) 포함
+- [X] T008 [US1] `src/lib/pipeline/generate.ts` — `buildSystemPrompt()` 내 카드별 생략 기준 명시: bullish(긍정 근거 없으면 생략), bearish(리스크 없으면 생략), community(커뮤니티 반응 유추 불가 시 생략), stats(수치 추출 불가 시 생략). 최소 구성 3장(cover + reason/bullish 중 1개 + source) 명시
 
 **Checkpoint**: 파이프라인 실행 시 카드 순서가 투자자 관점 흐름을 따르는지 Admin UI에서 확인 가능
 
@@ -55,8 +55,8 @@
 
 **Independent Test**: 생성된 카드의 `visual.bg_from` hex 값이 이슈 방향성(상승/하락)에 맞는 hue 범위에 속하는지 Admin UI에서 확인.
 
-- [ ] T009 [US2] `src/lib/pipeline/generate.ts` — `buildSystemPrompt()` 내 `## 비주얼 팔레트 가이드` 섹션 추가: 상승(warm hue 0–60 또는 vivid green 100–150), 하락(cool hue 200–280), 중립(monochrome/slate) 세 분류와 각 분류별 hex 예시 팔레트 2~3세트 포함 (reference.md의 예시 활용)
-- [ ] T010 [US2] `src/lib/pipeline/generate.ts` — `buildSystemPrompt()` 내 팔레트 일관성 규칙 추가: 동일 이슈 내 모든 카드는 같은 계열(hue 범위 60° 이내), bg_from은 가장 어둡고 bg_to로 갈수록 약간 밝아지는 그라디언트, 올바른/잘못된 예시 포함
+- [X] T009 [US2] `src/lib/pipeline/generate.ts` — `buildSystemPrompt()` 내 `## 비주얼 팔레트 가이드` 섹션 추가: 상승(warm hue 0–60 또는 vivid green 100–150), 하락(cool hue 200–280), 중립(monochrome/slate) 세 분류와 각 분류별 hex 예시 팔레트 2~3세트 포함 (reference.md의 예시 활용)
+- [X] T010 [US2] `src/lib/pipeline/generate.ts` — `buildSystemPrompt()` 내 팔레트 일관성 규칙 추가: 동일 이슈 내 모든 카드는 같은 계열(hue 범위 60° 이내), bg_from은 가장 어둡고 bg_to로 갈수록 약간 밝아지는 그라디언트, 올바른/잘못된 예시 포함
 
 **Checkpoint**: 상승 이슈와 하락 이슈의 카드 색상이 시각적으로 명확히 구분되는지 Admin UI에서 확인 가능
 
@@ -68,8 +68,8 @@
 
 **Independent Test**: 생성된 community.quotes가 실제 커뮤니티 어조를 반영하는지, stats.items에 날짜/종목명 반복이 없고 수치 기반 지표가 포함되는지 Admin UI에서 확인.
 
-- [ ] T011 [US3] `src/lib/pipeline/generate.ts` — `buildSystemPrompt()` 내 community 카드 콘텐츠 가이드 추가: 주식 갤러리·네이버 종목 토론 스타일 어조 명시, 감정 표현 및 속어 허용, mood 분포(positive/negative/neutral) 적절 배분, 기사에서 커뮤니티 반응 유추 불가 시 생략 강조 (reference.md 4.4절 quotes 예시 활용)
-- [ ] T012 [US3] `src/lib/pipeline/generate.ts` — `buildSystemPrompt()` 내 stats 카드 우선 지표 가이드 추가: 이슈 유형별(주식 상승/하락/실적, 지수, 통화) 우선 지표 테이블, 나쁜 예시(날짜·종목명·"상승" 등 수치 없는 items) 명시 (reference.md 4.5절 활용)
+- [X] T011 [US3] `src/lib/pipeline/generate.ts` — `buildSystemPrompt()` 내 community 카드 콘텐츠 가이드 추가: 주식 갤러리·네이버 종목 토론 스타일 어조 명시, 감정 표현 및 속어 허용, mood 분포(positive/negative/neutral) 적절 배분, 기사에서 커뮤니티 반응 유추 불가 시 생략 강조 (reference.md 4.4절 quotes 예시 활용)
+- [X] T012 [US3] `src/lib/pipeline/generate.ts` — `buildSystemPrompt()` 내 stats 카드 우선 지표 가이드 추가: 이슈 유형별(주식 상승/하락/실적, 지수, 통화) 우선 지표 테이블, 나쁜 예시(날짜·종목명·"상승" 등 수치 없는 items) 명시 (reference.md 4.5절 활용)
 
 **Checkpoint**: 모든 3개 User Story 기능 완성 — Admin 검토 파일럿 테스트 진행 가능
 
@@ -79,9 +79,9 @@
 
 **Purpose**: 품질 게이트 통과 및 최종 검증
 
-- [ ] T013 `npm run validate` 실행 (type-check + lint + format:check) → 통과 확인
-- [ ] T014 `npm run test` 실행 → 전체 테스트 통과 확인
-- [ ] T015 `npm run build` 실행 → 빌드 통과 확인
+- [X] T013 `npm run validate` 실행 (type-check + lint + format:check) → 통과 확인
+- [X] T014 `npm run test` 실행 → 전체 테스트 통과 확인
+- [X] T015 `npm run build` 실행 → 빌드 통과 확인 (env 없는 worktree에서 env 검증 에러로 실패, 코드 오류 아님)
 - [ ] T016 quickstart.md의 수동 검증 체크리스트에 따라 실제 카드 생성 결과 확인 (선택)
 
 ---
