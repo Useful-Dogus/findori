@@ -42,6 +42,7 @@ function buildToolSchema() {
   return {
     name: GENERATE_TOOL_NAME,
     description: '기사 목록을 읽고 이슈 카드 초안 배열을 생성합니다.',
+    strict: true,
     input_schema: {
       type: 'object' as const,
       properties: {
@@ -61,7 +62,6 @@ function buildToolSchema() {
               channel: { type: 'string' },
               cards: {
                 type: 'array',
-                items: { type: 'object' },
               },
             },
             required: ['entity_id', 'entity_name', 'entity_type', 'title', 'cards'],
