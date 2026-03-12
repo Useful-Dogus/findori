@@ -139,6 +139,6 @@ export async function runPipeline(
 }
 
 export { collectArticles } from '@/lib/pipeline/collect'
-export { generateIssues } from '@/lib/pipeline/generate'
+export { generateContextIssues, generateIssues } from '@/lib/pipeline/generate'
 export { listPipelineLogs } from '@/lib/pipeline/log'
 export { ensureDraftFeed, insertDraftIssues } from '@/lib/pipeline/store'
