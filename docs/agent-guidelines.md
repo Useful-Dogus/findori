@@ -20,9 +20,10 @@ Auto-generated from all feature plans. Last updated: 2026-02-27
 - Supabase PostgreSQL — `issues` 테이블 (`status`, `cards_data` 컬럼 업데이트) (008-admin-issue-review)
 - TypeScript 5.4+ / Node.js 20+ + `rss-parser` (기존 설치), `@supabase/supabase-js` ^2.0, `zod` ^4.3 (012-news-collector)
 - Supabase PostgreSQL — `pipeline_logs`(컬럼 추가), `media_sources`(읽기 전용) (012-news-collector)
+- TypeScript 5.4+, Node.js 20+ + `@anthropic-ai/sdk` (기존), `zod` (기존), Vitest (기존) (053-card-gen-quality)
+- N/A (텍스트 함수 수정만) (053-card-gen-quality)
 - TypeScript 5.4+ / Node.js 20+ + Next.js 15 (App Router Route Handlers), `@supabase/supabase-js` ^2.0, `@supabase/ssr` ^0.5, `zod` ^4.3 (날짜 파라미터 검증용) (015-public-feed-api)
 - Supabase PostgreSQL — `feeds`, `issues`, `issue_tags`, `tags` 테이블 (읽기 전용) (015-public-feed-api)
-
 
 ## Project Structure
 
@@ -68,6 +69,7 @@ npm run db:types     # Supabase DB 타입 재생성
 `docs/artifact-conventions.md`를 참조한다.
 
 ## Recent Changes
+- 053-card-gen-quality: Added TypeScript 5.4+, Node.js 20+ + `@anthropic-ai/sdk` (기존), `zod` (기존), Vitest (기존)
 - 015-public-feed-api: Added TypeScript 5.4+ / Node.js 20+ + Next.js 15 (App Router Route Handlers), `@supabase/supabase-js` ^2.0, `@supabase/ssr` ^0.5, `zod` ^4.3 (날짜 파라미터 검증용)
 - 013-claude-card-gen: Added TypeScript 5.4+ / Node.js 20+ + `@anthropic-ai/sdk` (기존 설치), `zod` ^4.3 (기존), `@supabase/supabase-js` ^2.0 (기존)
 - 012-news-collector: Added TypeScript 5.4+ / Node.js 20+ + `rss-parser` (기존 설치), `@supabase/supabase-js` ^2.0, `zod` ^4.3
