@@ -68,7 +68,15 @@ function buildToolSchema() {
                     id: { type: 'number' },
                     type: {
                       type: 'string',
-                      enum: ['cover', 'reason', 'bullish', 'bearish', 'community', 'stats', 'source'],
+                      enum: [
+                        'cover',
+                        'reason',
+                        'bullish',
+                        'bearish',
+                        'community',
+                        'stats',
+                        'source',
+                      ],
                     },
                     tag: { type: 'string' },
                     title: { type: 'string' },
