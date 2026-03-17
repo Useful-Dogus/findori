@@ -3,7 +3,31 @@
 
 import type { Card } from '@/types/cards'
 import { parseCards } from '@/lib/cards'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
+
+// ── 에러 클래스 ──────────────────────────────────────────────────────────
+
+export class FeedNotFoundError extends Error {
+  constructor(date: string) {
+    super(`feed not found: ${date}`)
+    this.name = 'FeedNotFoundError'
+  }
+}
+
+export class FeedAlreadyPublishedError extends Error {
+  constructor(date: string) {
+    super(`feed already published: ${date}`)
+    this.name = 'FeedAlreadyPublishedError'
+  }
+}
+
+export class NoApprovedIssuesError extends Error {
+  constructor(feedId: string) {
+    super(`no approved issues for feed: ${feedId}`)
+    this.name = 'NoApprovedIssuesError'
+  }
+}
 
 type FeedListRow = {
   id: string
@@ -50,6 +74,14 @@ export type AdminIssueSummary = {
   cardCount: number
   cardsData: Card[] | null // parseCards 성공 시 Card[], 실패 또는 null이면 null
   cardsParseError: boolean // cards_data가 있으나 파싱 실패 시 true
+}
+
+// ── 발행 결과 타입 ────────────────────────────────────────────────────────
+
+export type PublishFeedResult = {
+  date: string
+  status: 'published'
+  publishedAt: string // ISO 8601
 }
 
 // ── 날짜 유효성 검증 ──────────────────────────────────────────────────────
@@ -185,4 +217,73 @@ export async function getAdminFeedByDate(date: string): Promise<{
   })
 
   return { feed, issues }
+}
+
+/**
+ * 피드를 draft → published 로 전환
+ * @param date 'YYYY-MM-DD' 형식 (호출 전 isValidDate로 검증 필수)
+ * @throws FeedNotFoundError — 해당 날짜 피드 없음
+ * @throws FeedAlreadyPublishedError — 이미 published 상태
+ * @throws NoApprovedIssuesError — approved 이슈 0건
+ */
+export async function publishFeed(date: string): Promise<PublishFeedResult> {
+  const client = createAdminClient()
+
+  // Step 1: 피드 조회
+  const { data: feedData, error: feedError } = await client
+    .from('feeds')
+    .select('id, date, status')
+    .eq('date', date)
+    .maybeSingle()
+
+  if (feedError) {
+    throw new Error(`feed 조회 실패: ${feedError.message}`)
+  }
+
+  if (!feedData) {
+    throw new FeedNotFoundError(date)
+  }
+
+  if (feedData.status !== 'draft') {
+    throw new FeedAlreadyPublishedError(date)
+  }
+
+  // Step 2: approved 이슈 count 확인
+  const { count, error: countError } = await client
+    .from('issues')
+    .select('id', { count: 'exact', head: true })
+    .eq('feed_id', feedData.id)
+    .eq('status', 'approved')
+
+  if (countError) {
+    throw new Error(`issues count 조회 실패: ${countError.message}`)
+  }
+
+  if (!count || count === 0) {
+    throw new NoApprovedIssuesError(feedData.id)
+  }
+
+  // Step 3: published 전환 (낙관적 잠금: WHERE status='draft')
+  const { data: updatedData, error: updateError } = await client
+    .from('feeds')
+    .update({ status: 'published', published_at: new Date().toISOString() })
+    .eq('id', feedData.id)
+    .eq('status', 'draft')
+    .select('date, status, published_at')
+    .maybeSingle()
+
+  if (updateError) {
+    throw new Error(`feed 발행 실패: ${updateError.message}`)
+  }
+
+  if (!updatedData) {
+    // 동시 발행으로 이미 변경된 경우
+    throw new FeedAlreadyPublishedError(date)
+  }
+
+  return {
+    date: updatedData.date,
+    status: 'published',
+    publishedAt: updatedData.published_at as string,
+  }
 }

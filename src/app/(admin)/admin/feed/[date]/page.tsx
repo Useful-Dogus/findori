@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import { IssueList } from '@/components/features/admin/IssueList'
+import { PublishFeedButton } from '@/components/features/admin/PublishFeedButton'
 import { StatusBadge } from '@/components/features/admin/StatusBadge'
 import { getAdminFeedByDate, isValidDate } from '@/lib/admin/feeds'
 
@@ -42,9 +43,12 @@ export default async function AdminFeedDatePage({ params }: { params: Params }) 
           <Link href="/admin" className="text-sm font-medium text-sky-300 hover:text-sky-200">
             ← 피드 목록
           </Link>
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-3xl font-bold text-slate-50">{feed.date} 피드</h1>
-            <StatusBadge status={feed.status} />
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <h1 className="text-3xl font-bold text-slate-50">{feed.date} 피드</h1>
+              <StatusBadge status={feed.status} />
+            </div>
+            <PublishFeedButton date={feed.date} feedStatus={feed.status} />
           </div>
           <p className="text-sm text-slate-300">이슈 {feed.issueCount}건을 검토할 수 있습니다.</p>
         </div>

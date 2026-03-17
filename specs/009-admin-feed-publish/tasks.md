@@ -19,9 +19,9 @@
 
 **⚠️ CRITICAL**: 이 Phase가 완료되기 전까지 US1~US3 구현을 시작하지 않는다.
 
-- [ ] T001 `src/lib/admin/feeds.ts`에 에러 클래스 3종 추가: `FeedNotFoundError`, `FeedAlreadyPublishedError`, `NoApprovedIssuesError` (IssueNotFoundError 패턴 동일 적용)
-- [ ] T002 `src/lib/admin/feeds.ts`에 `publishFeed(date: string): Promise<PublishFeedResult>` 함수 구현 — (1) date로 feed 조회 → FeedNotFoundError, (2) status !== 'draft' → FeedAlreadyPublishedError, (3) approved 이슈 count → NoApprovedIssuesError, (4) UPDATE feeds SET status='published', published_at=now() WHERE id=$id AND status='draft'
-- [ ] T003 `tests/unit/lib/admin/feeds.publish.test.ts` 신규 생성 — happy path / FeedNotFoundError / FeedAlreadyPublishedError / NoApprovedIssuesError 4케이스 단위 테스트 작성 및 통과 확인
+- [x] T001 `src/lib/admin/feeds.ts`에 에러 클래스 3종 추가: `FeedNotFoundError`, `FeedAlreadyPublishedError`, `NoApprovedIssuesError` (IssueNotFoundError 패턴 동일 적용)
+- [x] T002 `src/lib/admin/feeds.ts`에 `publishFeed(date: string): Promise<PublishFeedResult>` 함수 구현 — (1) date로 feed 조회 → FeedNotFoundError, (2) status !== 'draft' → FeedAlreadyPublishedError, (3) approved 이슈 count → NoApprovedIssuesError, (4) UPDATE feeds SET status='published', published_at=now() WHERE id=$id AND status='draft'
+- [x] T003 `tests/unit/lib/admin/feeds.publish.test.ts` 신규 생성 — happy path / FeedNotFoundError / FeedAlreadyPublishedError / NoApprovedIssuesError 4케이스 단위 테스트 작성 및 통과 확인
 
 **Checkpoint**: `npm run test` 통과 → US1~US3 구현 시작 가능
 
@@ -35,9 +35,9 @@
 
 ### Implementation for User Story 1
 
-- [ ] T004 [P] [US1] `src/app/api/admin/feeds/[date]/publish/route.ts` 501 스텁을 완전 구현으로 교체 — requireAdminSession 인증, isValidDate 검증(400), publishFeed() 호출, 에러 클래스별 HTTP 코드 매핑(404/409/422/500), 성공 시 `{ date, status: 'published', publishedAt }` 200 응답
-- [ ] T005 [P] [US1] `src/components/features/admin/PublishFeedButton.tsx` 신규 Client Component 생성 — props: `date: string`, `feedStatus: 'draft' | 'published'`; 상태: isLoading / errorCode; 클릭 → `POST /api/admin/feeds/{date}/publish` → 성공 시 `useRouter().refresh()`; 에러 코드별 메시지 표시(no_approved_issues / already_published / 기타); feedStatus === 'published'이면 버튼 비활성화
-- [ ] T006 [US1] `src/app/(admin)/admin/feed/[date]/page.tsx`에 `<PublishFeedButton date={feed.date} feedStatus={feed.status} />` 추가 — 피드 헤더 영역(h1 + StatusBadge 옆)에 배치 (T004, T005 완료 후)
+- [x] T004 [P] [US1] `src/app/api/admin/feeds/[date]/publish/route.ts` 501 스텁을 완전 구현으로 교체 — requireAdminSession 인증, isValidDate 검증(400), publishFeed() 호출, 에러 클래스별 HTTP 코드 매핑(404/409/422/500), 성공 시 `{ date, status: 'published', publishedAt }` 200 응답
+- [x] T005 [P] [US1] `src/components/features/admin/PublishFeedButton.tsx` 신규 Client Component 생성 — props: `date: string`, `feedStatus: 'draft' | 'published'`; 상태: isLoading / errorCode; 클릭 → `POST /api/admin/feeds/{date}/publish` → 성공 시 `useRouter().refresh()`; 에러 코드별 메시지 표시(no_approved_issues / already_published / 기타); feedStatus === 'published'이면 버튼 비활성화
+- [x] T006 [US1] `src/app/(admin)/admin/feed/[date]/page.tsx`에 `<PublishFeedButton date={feed.date} feedStatus={feed.status} />` 추가 — 피드 헤더 영역(h1 + StatusBadge 옆)에 배치 (T004, T005 완료 후)
 
 **Checkpoint**: 발행 버튼 클릭 → published 전환 + 화면 갱신 3초 이내 동작 확인 (US1 완전 동작)
 
@@ -51,7 +51,7 @@
 
 ### Implementation for User Story 2
 
-- [ ] T007 [US2] `src/components/features/admin/PublishFeedButton.tsx` 에서 `no_approved_issues` 에러 코드에 대한 사용자 메시지가 명확한지 검증 — 필요 시 메시지 문구 개선: "승인된 이슈가 없습니다. 이슈를 승인한 후 발행해주세요." (T005의 초기 구현에서 처리됐다면 메시지 문구만 확인)
+- [x] T007 [US2] `src/components/features/admin/PublishFeedButton.tsx` 에서 `no_approved_issues` 에러 코드에 대한 사용자 메시지가 명확한지 검증 — 필요 시 메시지 문구 개선: "승인된 이슈가 없습니다. 이슈를 승인한 후 발행해주세요." (T005의 초기 구현에서 처리됐다면 메시지 문구만 확인)
 
 **Note**: API-side 차단(422 반환)은 Phase 1 T002의 `NoApprovedIssuesError`와 Phase 2 T004의 라우트 핸들러에서 이미 구현됨. 이 Phase는 UI 메시지 품질 검증에 집중.
 
@@ -67,7 +67,7 @@
 
 ### Implementation for User Story 3
 
-- [ ] T008 [US3] `src/components/features/admin/PublishFeedButton.tsx`에서 `feedStatus === 'published'` 시 버튼 disabled 처리 및 "이미 발행된 피드입니다" 상태 텍스트 표시 — T005에서 이미 구현됐다면 동작 확인만 수행
+- [x] T008 [US3] `src/components/features/admin/PublishFeedButton.tsx`에서 `feedStatus === 'published'` 시 버튼 disabled 처리 및 "이미 발행된 피드입니다" 상태 텍스트 표시 — T005에서 이미 구현됐다면 동작 확인만 수행
 
 **Note**: API-side 중복 발행 거부(409 반환)는 Phase 1 T002의 `FeedAlreadyPublishedError`와 Phase 2 T004의 라우트 핸들러에서 이미 구현됨.
 
@@ -79,9 +79,9 @@
 
 **Purpose**: 전체 기능 통합 검증 + 품질 기준 충족
 
-- [ ] T009 `npm run validate` 실행 — TypeScript 타입 오류, ESLint, Prettier 검사 통과 확인
-- [ ] T010 `npm run test` 실행 — T003 단위 테스트 포함 전체 테스트 통과 확인
-- [ ] T011 `npm run build` 실행 — 프로덕션 빌드 성공 확인
+- [x] T009 `npm run validate` 실행 — TypeScript 타입 오류, ESLint, Prettier 검사 통과 확인
+- [x] T010 `npm run test` 실행 — T003 단위 테스트 포함 전체 테스트 통과 확인
+- [x] T011 `npm run build` 실행 — 프로덕션 빌드 성공 확인
 
 ---
 
