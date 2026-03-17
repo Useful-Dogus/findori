@@ -62,7 +62,80 @@ function buildToolSchema() {
               channel: { type: 'string' },
               cards: {
                 type: 'array',
-                items: { type: 'object' },
+                items: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'number' },
+                    type: {
+                      type: 'string',
+                      enum: [
+                        'cover',
+                        'reason',
+                        'bullish',
+                        'bearish',
+                        'community',
+                        'stats',
+                        'source',
+                      ],
+                    },
+                    tag: { type: 'string' },
+                    title: { type: 'string' },
+                    body: { type: 'string' },
+                    sub: { type: 'string' },
+                    stat: { type: 'string' },
+                    visual: {
+                      type: 'object',
+                      properties: {
+                        bg_from: { type: 'string' },
+                        bg_via: { type: 'string' },
+                        bg_to: { type: 'string' },
+                        accent: { type: 'string' },
+                      },
+                      required: ['bg_from', 'bg_via', 'bg_to', 'accent'],
+                      additionalProperties: false,
+                    },
+                    sources: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          title: { type: 'string' },
+                          url: { type: 'string' },
+                          domain: { type: 'string' },
+                        },
+                        required: ['title', 'url', 'domain'],
+                        additionalProperties: false,
+                      },
+                    },
+                    quotes: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          text: { type: 'string' },
+                          mood: { type: 'string' },
+                        },
+                        required: ['text', 'mood'],
+                        additionalProperties: false,
+                      },
+                    },
+                    items: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          label: { type: 'string' },
+                          value: { type: 'string' },
+                          change: { type: 'string' },
+                        },
+                        required: ['label', 'value'],
+                        additionalProperties: false,
+                      },
+                    },
+                  },
+                  required: ['id', 'type', 'tag', 'visual'],
+                  additionalProperties: false,
+                },
               },
             },
             required: ['entity_id', 'entity_name', 'entity_type', 'title', 'cards'],
