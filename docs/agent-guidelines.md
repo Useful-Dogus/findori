@@ -85,6 +85,56 @@ npm run db:types     # Supabase DB 타입 재생성
 - **PR title format**: PR 제목은 반드시 `[Issue #N] <설명>` 형식을 사용한다. `Issue` 단수형을 사용하고, `Issues`, `#NNN`, 자유 형식 제목을 사용하지 않는다.
 - **PR body format**: PR 본문은 반드시 `## Summary`, `## Test plan`, `Closes #N`을 포함한다. 웹 애플리케이션 코드 변경에서는 `npm run validate`, `npm run test`, `npm run build` 실행 결과를 각각 명시하고, 실패 시에도 실제 실행 결과와 실패 사유를 그대로 적는다.
 
+## Next-Task Suggestion Workflow (Permanent)
+
+"다음 작업 제안해줘" 또는 유사한 요청을 받으면 아래 파이프라인을 순서대로 수행한다.
+
+### 1. main 브랜치 최신화
+```bash
+git -C <repo-root> fetch origin
+git -C <repo-root> checkout main
+git -C <repo-root> pull --ff-only origin main
+```
+
+### 2. 현황 파악 (병렬 수행)
+- **코드베이스**: 최근 커밋 로그(`git log --oneline -20`), 현재 브랜치 목록, `specs/` 디렉터리 구조를 확인한다.
+- **GitHub 이슈**: `gh issue list --state open --limit 30` 으로 열린 이슈를 조회한다. 필요 시 `gh issue view <N>` 으로 상세 내용을 확인한다.
+- **최근 PR**: `gh pr list --state merged --limit 10` 으로 최근 병합된 PR을 확인해 완료된 작업을 파악한다.
+
+### 3. 다음 작업 제안
+수집한 정보를 바탕으로 다음 기준으로 우선순위를 평가하여 **3개 이하**의 후보를 제안한다:
+1. 이미 열려 있는 이슈 중 블로킹이 없고 의존성이 충족된 것
+2. 기존 스펙/계획이 있어 즉시 구현에 착수할 수 있는 것
+3. 비즈니스 가치(사용자 가치 > 내부 개선 > 기술 부채 순)
+
+제안 형식:
+```
+## 다음 작업 후보
+
+### 1순위: [Issue #N] <이슈 제목>
+- 이유: <한두 줄 근거>
+- 선행 조건: <없음 or 구체적 조건>
+
+### 2순위: ...
+```
+
+### 4. 작업 시작 절차 (사용자가 승인 후)
+```bash
+# main에서 이슈 브랜치 생성
+git -C <repo-root> checkout -b issue/<N>-<slug> main
+
+# 구현 → 품질 게이트 통과
+npm run validate && npm run test
+
+# 커밋 후 PR 생성
+gh pr create --title "[Issue #N] <설명>" --body "..."
+```
+- 브랜치 네이밍: `issue/<N>-<short-slug>` (예: `issue/61-public-search-api`)
+- PR은 반드시 `main` 을 base 브랜치로 사용한다.
+- PR 본문 형식은 **PR body format** 규칙을 따른다.
+
+> **주의**: 3단계 제안 이후 사용자의 명시적 승인 없이 브랜치를 생성하거나 코드를 변경하지 않는다.
+
 ## Security Rules For Public Repo (Permanent)
 
 - **No hardcoded infra refs**: Supabase project ref/ID, API URL, 키를 문서/스크립트/코드에 하드코딩하지 말고 `.env.local` 기반으로 주입.
