@@ -3,8 +3,10 @@
 // TODO(#18): 스와이프 UI 구현 시 스와이프 탐색 추가
 
 import Link from 'next/link'
+import { useEffect } from 'react'
 
 import FeedSourceLink from '@/components/features/feed/FeedSourceLink'
+import { trackFeedEvent } from '@/lib/analytics'
 import type { PublicIssueSummary } from '@/lib/public/feeds'
 import type { CardSource } from '@/types/cards'
 
@@ -65,6 +67,26 @@ function getContextSummary(issue: PublicIssueSummary | null): {
 
 export default function FeedView({ date, issues, initialIssueId, previousDate }: FeedViewProps) {
   const origin = typeof window === 'undefined' ? 'https://findori.app' : window.location.origin
+  const openedIssue =
+    issues.find((issue) => issue.id === initialIssueId) ??
+    issues.find((issue) => issue.entityType === 'stock') ??
+    issues[0]
+
+  useEffect(() => {
+    if (!openedIssue) {
+      return
+    }
+
+    trackFeedEvent({
+      event: 'feed_opened',
+      entityType: openedIssue.entityType,
+      entityId: openedIssue.entityId,
+      cardIndex: 1,
+      totalCards: openedIssue.cardsData?.length ?? 0,
+      isLoggedIn: false,
+    })
+  }, [openedIssue])
+
   const contextIssues = CONTEXT_SLOTS.map((slot) => {
     const issue =
       issues.find((candidate) => candidate.entityId === slot.entityId) ??
@@ -223,10 +245,16 @@ export default function FeedView({ date, issues, initialIssueId, previousDate }:
                   permalink={`${origin}/feed/${date}/issue/${issue.id}`}
                   title={issue.title}
                   summary={`${issue.entityName} 이슈 카드 스트림`}
+                  entityType={issue.entityType}
+                  entityId={issue.entityId}
                 />
               </div>
             </div>
-            <FeedCardStack cards={issue.cardsData} />
+            <FeedCardStack
+              cards={issue.cardsData}
+              entityType={issue.entityType}
+              entityId={issue.entityId}
+            />
           </section>
         ))}
       </main>

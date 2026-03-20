@@ -5,11 +5,13 @@ import FeedShareButton from '@/components/features/feed/FeedShareButton'
 
 const shareMock = vi.fn()
 const writeTextMock = vi.fn()
+const sendBeaconMock = vi.fn()
 
 describe('FeedShareButton', () => {
   beforeEach(() => {
     shareMock.mockReset()
     writeTextMock.mockReset()
+    sendBeaconMock.mockReset()
 
     Object.defineProperty(window, 'location', {
       configurable: true,
@@ -24,6 +26,11 @@ describe('FeedShareButton', () => {
     Object.defineProperty(navigator, 'clipboard', {
       configurable: true,
       value: { writeText: writeTextMock },
+    })
+
+    Object.defineProperty(navigator, 'sendBeacon', {
+      configurable: true,
+      value: sendBeaconMock,
     })
   })
 
