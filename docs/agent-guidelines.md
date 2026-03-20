@@ -3,7 +3,7 @@
 Auto-generated from all feature plans. Last updated: 2026-02-27
 
 ## Active Technologies
-- Markdown, Bash + Claude Code (@-import 런타임 지원), Codex CLI (파일 언급으로 임포트 동작) (036-unified-agent-context)
+- Markdown, Bash, Codex CLI, repo-local Speckit prompts under `.codex/prompts/`, repo-local skills under `.codex/skills/` (036-unified-agent-context)
 - TypeScript 5.4+, Node.js 20+ + Next.js 15 (App Router, Turbopack), React 19, Tailwind CSS v4, @supabase/supabase-js, @supabase/ssr (002-tech-baseline-setup)
 - Zod (003-env-secrets)
 - TypeScript 5.4+ / Node.js 20+ (타입 재생성) + Supabase CLI, `@supabase/supabase-js` ^2.0, `@supabase/ssr` ^0.5 (004-db-schema-migration)
@@ -71,6 +71,16 @@ npm run db:types     # Supabase DB 타입 재생성
 산출물 작성 규칙(스펙·이슈·커밋·PR 형식, 번호 정렬 체계, 코드 품질 기준, hotfix 예외 흐름)은
 `docs/artifact-conventions.md`를 참조한다.
 
+## Codex Workflow
+
+- Codex는 질의응답 도구가 아니라 저장소 내장형 실행 에이전트로 사용한다.
+- 큰 작업은 가능한 한 `spec -> plan -> tasks -> implement` 흐름으로 진행한다.
+- 각 단계 산출물은 `specs/NNN-<short-name>/` 아래에 `spec.md`, `plan.md`, `tasks.md`로 남긴다.
+- `/speckit.implement` 성격의 실행에서는 분석만 하고 멈추지 말고, 범위 내 품질 게이트를 통과시키거나 저장소 상태만으로 해결 불가능한 구체적 blocker를 남길 때까지 진행한다.
+- 저장소에 있는 `.codex/prompts/*.md`가 Speckit 워크플로의 단일 기준이다. repo-local skill은 이 프롬프트의 얇은 진입점으로만 유지한다.
+- repo-local skills 설치가 필요하면 `scripts/install-codex-speckit-skills.sh`를 사용한다.
+- 사용자가 "다음 작업"을 요청하면 최근 커밋, `specs/`, 열린 GitHub 이슈/PR, 검증 상태를 함께 보고 준비된 작업만 제안한다.
+
 ## Recent Changes
 - 016-public-routing-ssr: Added TypeScript 5.4+ / Node.js 20+ + Next.js 15 (App Router, Server Components, generateMetadata), React 19, Tailwind CSS v4, `@supabase/supabase-js` ^2.0, `@supabase/ssr` ^0.5
 - 009-admin-feed-publish: Added TypeScript 5.4+ / Node.js 20+ + Next.js 15 (App Router, Route Handlers), React 19, `@supabase/supabase-js` ^2.0, `@supabase/ssr` ^0.5, Zod (입력 검증 불필요 — path param만 사용)
@@ -79,12 +89,14 @@ npm run db:types     # Supabase DB 타입 재생성
 <!-- MANUAL ADDITIONS START -->
 ## Workflow Rules (Permanent)
 
-- **Commit policy**: 이슈 브랜치에 직접 커밋. `Co-Authored-By: Claude` 또는 "클로드코드 협업자" 라인 절대 금지.
+- **Commit policy**: 이슈 브랜치에 직접 커밋. AI 도구명 기반 `Co-Authored-By` 라인이나 특정 에이전트 협업자 표기 같은 자동 서명 라인 절대 금지.
 - **After implement**: 품질 게이트(`npm run validate` + `npm run test` + 필요 시 `npm run build`) 통과 후 이슈 브랜치에 커밋 → GitHub PR 생성 후 URL 보고.
 - **Feature branch/spec numbering**: `/speckit.specify` 또는 브랜치/스펙 생성 시 **반드시 GitHub 이슈 번호를 사용**한다. 이슈 제목이나 설명에 `#N` 형식으로 이슈 번호가 명시된 경우 해당 번호를 3자리 0-패딩으로 변환하여 사용한다 (예: `#8` → `008`, `#42` → `042`). `create-new-feature.sh`의 `--number` 인자에는 이 이슈 번호를 전달한다. 도구 내부의 자동 증분 번호(001, 002…)를 절대 사용하지 않는다.
 - **Worktree discipline**: 사용자가 특정 worktree 경로를 지정하면 모든 조회·수정·검증·커밋·PR 작업은 반드시 그 worktree 루트에서 수행한다. 저장소 루트나 다른 worktree에서 임시 구현 후 옮기는 방식은 금지한다.
 - **PR title format**: PR 제목은 반드시 `[Issue #N] <설명>` 형식을 사용한다. `Issue` 단수형을 사용하고, `Issues`, `#NNN`, 자유 형식 제목을 사용하지 않는다.
 - **PR body format**: PR 본문은 반드시 `## Summary`, `## Test plan`, `Closes #N`을 포함한다. 웹 애플리케이션 코드 변경에서는 `npm run validate`, `npm run test`, `npm run build` 실행 결과를 각각 명시하고, 실패 시에도 실제 실행 결과와 실패 사유를 그대로 적는다.
+- **PR writing quality**: PR 본문은 단순 변경 요약이 아니라 개발자 문서처럼 작성한다. 왜 바뀌었는지, 어떤 이슈/스펙/규칙을 구현했는지, 어떤 경계가 바뀌었는지, 어떤 리스크와 non-goal이 남았는지를 설명한다.
+- **GitHub writing language**: 이 저장소에서 Codex가 작성하는 GitHub 이슈/PR 제목과 본문은 기본적으로 한국어를 사용한다. 코드 식별자, 경로, 명령어, 타입명은 원문을 유지한다.
 
 ## Next-Task Suggestion Workflow (Permanent)
 

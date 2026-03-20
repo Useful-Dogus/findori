@@ -10,6 +10,20 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Non-Negotiable Output Rules
+
+- Treat `/speckit.implement` as an execution request, not an analysis-only request.
+- Continue implementation until the in-scope quality gates pass, or until a concrete blocker remains that cannot be resolved inside the current repository state.
+- Minimum quality gates are the checks required by the active task list, plus directly relevant verification such as `npm run validate`, `npm run test`, and `npm run build` when the change affects shipped application behavior.
+- Do not stop after partial code edits if the required quality gates have not been run or are still failing.
+- If the work results in a commit, the commit message MUST use the Conventional Commits format: `type: subject` or `type(scope): subject`.
+- If the implemented change fully completes a GitHub issue, the PR description MUST include a closing keyword such as `Closes #41`.
+- If the change only partially advances an issue, link the issue in the PR description without an automatic closing keyword and state that the issue remains open.
+- The final report MUST include:
+  - summary of the implemented change
+  - quality gates that were run and their outcomes
+  - PR link or explicit PR blocker
+
 ## Outline
 
 1. Run `.specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks` from repo root and parse FEATURE_DIR and AVAILABLE_DOCS list. All paths must be absolute. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
@@ -130,6 +144,9 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Check that implemented features match the original specification
    - Validate that tests pass and coverage meets requirements
    - Confirm the implementation follows the technical plan
-   - Report final status with summary of completed work
+   - Determine whether the change fully completes any referenced GitHub issue
+   - Ensure the PR description uses a closing keyword for fully completed issues and avoids one for partial-only work
+   - If you create a commit, choose the appropriate Conventional Commits type (`feat`, `fix`, `refactor`, `test`, `docs`, `chore`, etc.) and keep the subject imperative
+   - Report final status in PR format with summary of completed work, verification results, and PR link or blocker
 
 Note: This command assumes a complete task breakdown exists in tasks.md. If tasks are incomplete or missing, suggest running `/speckit.tasks` first to regenerate the task list.
