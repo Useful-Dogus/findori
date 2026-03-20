@@ -2,6 +2,7 @@ import type { CardSource } from '@/types/cards'
 
 type FeedSourceLinkProps = {
   source: CardSource
+  onClick?: () => void
 }
 
 function isSafeExternalUrl(url: string) {
@@ -13,7 +14,7 @@ function isSafeExternalUrl(url: string) {
   }
 }
 
-export default function FeedSourceLink({ source }: FeedSourceLinkProps) {
+export default function FeedSourceLink({ source, onClick }: FeedSourceLinkProps) {
   if (!isSafeExternalUrl(source.url)) {
     return (
       <span className="border-border bg-background/25 inline-flex min-h-11 items-center rounded-full border px-3 py-2 text-left">
@@ -28,6 +29,7 @@ export default function FeedSourceLink({ source }: FeedSourceLinkProps) {
       href={source.url}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={onClick}
       className="border-border bg-background/25 hover:bg-background/40 inline-flex min-h-11 items-center rounded-full border px-3 py-2 text-left transition-colors"
     >
       <span className="text-foreground text-xs font-medium">{source.domain}</span>

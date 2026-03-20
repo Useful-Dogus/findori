@@ -2,15 +2,25 @@
 
 import { useState } from 'react'
 
+import { trackFeedEvent } from '@/lib/analytics'
+
 type FeedShareButtonProps = {
   permalink: string
   title: string
   summary: string
+  entityType?: string
+  entityId?: string
 }
 
 type ShareStatus = 'idle' | 'shared' | 'copied' | 'error'
 
-export default function FeedShareButton({ permalink, title, summary }: FeedShareButtonProps) {
+export default function FeedShareButton({
+  permalink,
+  title,
+  summary,
+  entityType,
+  entityId,
+}: FeedShareButtonProps) {
   const [status, setStatus] = useState<ShareStatus>('idle')
 
   async function copyLink() {
@@ -25,6 +35,14 @@ export default function FeedShareButton({ permalink, title, summary }: FeedShare
   }
 
   async function handleShare() {
+    trackFeedEvent({
+      event: 'share_clicked',
+      entityType,
+      entityId,
+      url: permalink,
+      isLoggedIn: false,
+    })
+
     try {
       if (navigator.share) {
         await navigator.share({

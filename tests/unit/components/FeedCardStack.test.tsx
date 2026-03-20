@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import FeedCardStack from '@/components/features/feed/FeedCardStack'
 import type { Card } from '@/types/cards'
@@ -47,6 +47,13 @@ const cards: Card[] = [
 ]
 
 describe('FeedCardStack', () => {
+  beforeEach(() => {
+    Object.defineProperty(navigator, 'sendBeacon', {
+      configurable: true,
+      value: vi.fn().mockReturnValue(true),
+    })
+  })
+
   it('다음/이전 버튼으로 현재 카드를 이동하고 진행 상태를 갱신한다', () => {
     render(<FeedCardStack cards={cards} />)
 

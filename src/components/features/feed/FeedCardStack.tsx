@@ -3,11 +3,14 @@
 import { useRef, useState } from 'react'
 import type { CSSProperties, TouchEvent } from 'react'
 
+import { trackFeedEvent } from '@/lib/analytics'
 import FeedSourceLink from '@/components/features/feed/FeedSourceLink'
 import type { Card, CardSource } from '@/types/cards'
 
 type FeedCardStackProps = {
   cards: Card[] | null
+  entityType?: string
+  entityId?: string
 }
 
 function cardStyle(card: Card): CSSProperties {
@@ -25,9 +28,11 @@ function sectionLabel(card: Card, index: number, total: number) {
 function SourceList({
   sources,
   emptyLabel = '출처 확인 중',
+  onSourceClick,
 }: {
   sources: CardSource[]
   emptyLabel?: string
+  onSourceClick?: (source: CardSource) => void
 }) {
   if (sources.length === 0) {
     return <p className="text-muted text-xs">{emptyLabel}</p>
@@ -36,13 +41,23 @@ function SourceList({
   return (
     <div className="mt-4 flex flex-wrap gap-2">
       {sources.map((source) => (
-        <FeedSourceLink key={`${source.domain}-${source.url}`} source={source} />
+        <FeedSourceLink
+          key={`${source.domain}-${source.url}`}
+          source={source}
+          onClick={() => onSourceClick?.(source)}
+        />
       ))}
     </div>
   )
 }
 
-function CardBody({ card }: { card: Card }) {
+function CardBody({
+  card,
+  onSourceClick,
+}: {
+  card: Card
+  onSourceClick?: (source: CardSource) => void
+}) {
   switch (card.type) {
     case 'cover':
       return (
@@ -63,7 +78,7 @@ function CardBody({ card }: { card: Card }) {
               {card.stat}
             </p>
           ) : null}
-          <SourceList sources={card.sources} />
+          <SourceList sources={card.sources} onSourceClick={onSourceClick} />
         </>
       )
     case 'community':
@@ -110,13 +125,14 @@ function CardBody({ card }: { card: Card }) {
           <SourceList
             sources={card.sources}
             emptyLabel="출처가 아직 연결되지 않았습니다. 운영 화면에서 보완이 필요합니다."
+            onSourceClick={onSourceClick}
           />
         </>
       )
   }
 }
 
-export default function FeedCardStack({ cards }: FeedCardStackProps) {
+export default function FeedCardStack({ cards, entityType, entityId }: FeedCardStackProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   const touchStartXRef = useRef<number | null>(null)
 
@@ -135,11 +151,33 @@ export default function FeedCardStack({ cards }: FeedCardStackProps) {
 
   function moveCard(direction: 'prev' | 'next') {
     setActiveIndex((current) => {
-      if (direction === 'prev') {
-        return Math.max(0, current - 1)
+      const nextIndex =
+        direction === 'prev' ? Math.max(0, current - 1) : Math.min(totalCards - 1, current + 1)
+
+      if (nextIndex !== current) {
+        trackFeedEvent({
+          event: 'card_swiped',
+          entityType,
+          entityId,
+          cardIndex: nextIndex + 1,
+          totalCards,
+          isLoggedIn: false,
+        })
       }
 
-      return Math.min(totalCards - 1, current + 1)
+      return nextIndex
+    })
+  }
+
+  function handleSourceClick(source: CardSource) {
+    trackFeedEvent({
+      event: 'source_clicked',
+      entityType,
+      entityId,
+      cardIndex: activeIndex + 1,
+      totalCards,
+      url: source.url,
+      isLoggedIn: false,
     })
   }
 
@@ -211,7 +249,7 @@ export default function FeedCardStack({ cards }: FeedCardStackProps) {
               </p>
             </div>
             <div className="space-y-4">
-              <CardBody card={activeCard} />
+              <CardBody card={activeCard} onSourceClick={handleSourceClick} />
             </div>
           </div>
         </article>

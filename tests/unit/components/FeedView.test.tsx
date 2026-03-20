@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import FeedDisclaimer from '@/components/features/feed/FeedDisclaimer'
 import FeedView from '@/components/features/feed/FeedView'
@@ -137,6 +137,13 @@ const contextIssue: PublicIssueSummary = {
 }
 
 describe('FeedView', () => {
+  beforeEach(() => {
+    Object.defineProperty(navigator, 'sendBeacon', {
+      configurable: true,
+      value: vi.fn().mockReturnValue(true),
+    })
+  })
+
   it('카드 타입별 UI와 출처 링크를 렌더링한다', () => {
     render(<FeedView date="2026-03-20" issues={[sampleIssue]} previousDate="2026-03-19" />)
 
