@@ -26,6 +26,7 @@ Auto-generated from all feature plans. Last updated: 2026-02-27
 - Supabase PostgreSQL — `feeds`, `issues`, `issue_tags`, `tags` 테이블 (읽기 전용) (015-public-feed-api)
 - TypeScript 5.4+ / Node.js 20+ + Next.js 15 (App Router, Route Handlers), React 19, `@supabase/supabase-js` ^2.0, `@supabase/ssr` ^0.5, Zod (입력 검증 불필요 — path param만 사용) (009-admin-feed-publish)
 - Supabase PostgreSQL — `feeds` 테이블 (status, published_at 업데이트), `issues` 테이블 (approved count 조회) (009-admin-feed-publish)
+- TypeScript 5.4+ / Node.js 20+ + Next.js 15 (App Router, Server Components, generateMetadata), React 19, Tailwind CSS v4, `@supabase/supabase-js` ^2.0, `@supabase/ssr` ^0.5 (016-public-routing-ssr)
 
 ## Project Structure
 
@@ -71,9 +72,9 @@ npm run db:types     # Supabase DB 타입 재생성
 `docs/artifact-conventions.md`를 참조한다.
 
 ## Recent Changes
+- 016-public-routing-ssr: Added TypeScript 5.4+ / Node.js 20+ + Next.js 15 (App Router, Server Components, generateMetadata), React 19, Tailwind CSS v4, `@supabase/supabase-js` ^2.0, `@supabase/ssr` ^0.5
 - 009-admin-feed-publish: Added TypeScript 5.4+ / Node.js 20+ + Next.js 15 (App Router, Route Handlers), React 19, `@supabase/supabase-js` ^2.0, `@supabase/ssr` ^0.5, Zod (입력 검증 불필요 — path param만 사용)
 - 053-card-gen-quality: Added TypeScript 5.4+, Node.js 20+ + `@anthropic-ai/sdk` (기존), `zod` (기존), Vitest (기존)
-- 015-public-feed-api: Added TypeScript 5.4+ / Node.js 20+ + Next.js 15 (App Router Route Handlers), `@supabase/supabase-js` ^2.0, `@supabase/ssr` ^0.5, `zod` ^4.3 (날짜 파라미터 검증용)
 
 <!-- MANUAL ADDITIONS START -->
 ## Workflow Rules (Permanent)

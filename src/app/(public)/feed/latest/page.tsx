@@ -4,7 +4,7 @@ import FeedEmptyState from '@/components/features/feed/FeedEmptyState'
 import FeedErrorState from '@/components/features/feed/FeedErrorState'
 import { getLatestPublishedDate } from '@/lib/public/feeds'
 
-export default async function HomePage() {
+export default async function FeedLatestPage() {
   let date: string | null
 
   try {
