@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import {
   isValidDate,
   getLatestPublishedDate,
+  getPreviousPublishedDate,
   getPublicFeedByDate,
   getPublicIssueById,
   type PublicIssueSummary,
@@ -114,6 +115,44 @@ describe('getLatestPublishedDate', () => {
   it('DB 오류 시 에러를 던진다', async () => {
     setupLatestChain({ data: null, error: { message: 'connection failed' } })
     await expect(getLatestPublishedDate()).rejects.toThrow('feeds 조회 실패')
+  })
+})
+
+describe('getPreviousPublishedDate', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  function setupPreviousChain(result: { data: unknown; error: unknown }) {
+    mockMaybeSingle.mockResolvedValue(result)
+    mockLimit.mockReturnValue({ maybeSingle: mockMaybeSingle })
+    mockOrder.mockReturnValue({ limit: mockLimit })
+    const mockLt = vi.fn().mockReturnValue({ order: mockOrder })
+    mockEq.mockReturnValue({ lt: mockLt })
+    mockSelect.mockReturnValue({ eq: mockEq })
+    mockFrom.mockReturnValue({ select: mockSelect })
+  }
+
+  it('현재 날짜보다 이전의 최신 published 날짜를 반환한다', async () => {
+    setupPreviousChain({ data: { date: '2026-03-19' }, error: null })
+
+    const result = await getPreviousPublishedDate('2026-03-20')
+
+    expect(result).toBe('2026-03-19')
+  })
+
+  it('이전 published 피드가 없으면 null을 반환한다', async () => {
+    setupPreviousChain({ data: null, error: null })
+
+    const result = await getPreviousPublishedDate('2026-03-20')
+
+    expect(result).toBeNull()
+  })
+
+  it('DB 오류 시 에러를 던진다', async () => {
+    setupPreviousChain({ data: null, error: { message: 'connection failed' } })
+
+    await expect(getPreviousPublishedDate('2026-03-20')).rejects.toThrow('이전 feed 조회 실패')
   })
 })
 

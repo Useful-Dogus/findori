@@ -2,6 +2,8 @@
 
 // TODO(#18): 스와이프 UI 구현 시 스와이프 탐색 추가
 
+import Link from 'next/link'
+
 import FeedSourceLink from '@/components/features/feed/FeedSourceLink'
 import type { PublicIssueSummary } from '@/lib/public/feeds'
 import type { CardSource } from '@/types/cards'
@@ -13,6 +15,7 @@ type FeedViewProps = {
   date: string
   issues: PublicIssueSummary[]
   initialIssueId?: string
+  previousDate?: string | null
 }
 
 const CONTEXT_SLOTS = [
@@ -60,7 +63,7 @@ function getContextSummary(issue: PublicIssueSummary | null): {
   }
 }
 
-export default function FeedView({ date, issues, initialIssueId }: FeedViewProps) {
+export default function FeedView({ date, issues, initialIssueId, previousDate }: FeedViewProps) {
   const origin = typeof window === 'undefined' ? 'https://findori.app' : window.location.origin
   const contextIssues = CONTEXT_SLOTS.map((slot) => {
     const issue =
@@ -87,9 +90,27 @@ export default function FeedView({ date, issues, initialIssueId }: FeedViewProps
             <h1 className="text-foreground text-xl font-semibold">오늘의 이슈 카드 스트림</h1>
             <p className="text-muted mt-1 text-sm">이슈 {issues.length}건</p>
           </div>
-          <p className="text-muted max-w-44 text-right text-xs leading-5">
-            사건, 해석, 시장 반응 흐름으로 정리한 카드 브리핑
-          </p>
+          <div className="flex flex-col items-end gap-2">
+            <p className="text-muted max-w-44 text-right text-xs leading-5">
+              사건, 해석, 시장 반응 흐름으로 정리한 카드 브리핑
+            </p>
+            <div className="flex flex-wrap justify-end gap-2 text-xs">
+              {previousDate ? (
+                <Link
+                  href={`/feed/${previousDate}`}
+                  className="rounded-full border border-white/12 px-3 py-1.5 text-white/75 transition hover:border-white/30 hover:text-white"
+                >
+                  이전 발행일
+                </Link>
+              ) : null}
+              <Link
+                href="/feed/latest"
+                className="rounded-full border border-white/12 px-3 py-1.5 text-white/75 transition hover:border-white/30 hover:text-white"
+              >
+                최신 피드
+              </Link>
+            </div>
+          </div>
         </div>
       </header>
       <main className="flex flex-1 flex-col gap-5 p-4">
