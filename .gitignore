@@ -28,6 +28,7 @@ tsconfig.tsbuildinfo
 # Logs
 *.log
 npm-debug.log*
+cookies.txt
 
 *.tmp
 *.swp
