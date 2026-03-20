@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 
 import FeedDisclaimer from '@/components/features/feed/FeedDisclaimer'
@@ -141,14 +141,19 @@ describe('FeedView', () => {
     render(<FeedView date="2026-03-20" issues={[sampleIssue]} />)
 
     expect(screen.getByText('오늘의 이슈 카드 스트림')).toBeInTheDocument()
+    expect(screen.getByText('1/3')).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: '다음 카드' }))
     expect(screen.getByText('메모리 업황 기대')).toBeInTheDocument()
     expect(screen.getByText('외국인 순매수 +3,200억')).toBeInTheDocument()
-    expect(screen.getByText('출처 전체 보기')).toBeInTheDocument()
 
     const link = screen.getAllByRole('link', { name: /example.com/i })[0]
     expect(link).toHaveAttribute('href', 'https://example.com/article')
     expect(link).toHaveAttribute('target', '_blank')
     expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+
+    fireEvent.click(screen.getByRole('button', { name: '다음 카드' }))
+    expect(screen.getByText('출처 전체 보기')).toBeInTheDocument()
   })
 
   it('대표 지수·환율 맥락 섹션을 렌더링하고 누락 슬롯은 업데이트 지연으로 표시한다', () => {
@@ -216,6 +221,8 @@ describe('FeedView', () => {
         ]}
       />,
     )
+
+    fireEvent.click(screen.getByRole('button', { name: '다음 카드' }))
 
     expect(screen.getByText('링크 확인 필요')).toBeInTheDocument()
     expect(screen.queryByRole('link', { name: /bad\.example/i })).not.toBeInTheDocument()
