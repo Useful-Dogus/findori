@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
         title: issue.title,
         description,
         url: `https://findori.app/feed/${date}/issue/${id}`,
-        images: [{ url: '/og-default.png' }],
+        images: [{ url: `/api/og/issue/${id}` }],
       },
     }
   } catch {
