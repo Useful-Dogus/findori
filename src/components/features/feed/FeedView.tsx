@@ -7,6 +7,7 @@ import type { PublicIssueSummary } from '@/lib/public/feeds'
 import type { CardSource } from '@/types/cards'
 
 import FeedCardStack from './FeedCardStack'
+import FeedShareButton from './FeedShareButton'
 
 type FeedViewProps = {
   date: string
@@ -60,6 +61,7 @@ function getContextSummary(issue: PublicIssueSummary | null): {
 }
 
 export default function FeedView({ date, issues, initialIssueId }: FeedViewProps) {
+  const origin = typeof window === 'undefined' ? 'https://findori.app' : window.location.origin
   const contextIssues = CONTEXT_SLOTS.map((slot) => {
     const issue =
       issues.find((candidate) => candidate.entityId === slot.entityId) ??
@@ -185,16 +187,23 @@ export default function FeedView({ date, issues, initialIssueId }: FeedViewProps
                   {issue.entityName} · 카드 {issue.cardsData?.length ?? 0}장
                 </p>
               </div>
-              {issue.changeValue && (
-                <span
-                  className={[
-                    'shrink-0 rounded-full px-3 py-1 text-sm font-bold',
-                    issue.changeValue.startsWith('-') ? 'text-accent-red' : 'text-accent-green',
-                  ].join(' ')}
-                >
-                  {issue.changeValue}
-                </span>
-              )}
+              <div className="flex shrink-0 flex-col items-end gap-3">
+                {issue.changeValue && (
+                  <span
+                    className={[
+                      'rounded-full px-3 py-1 text-sm font-bold',
+                      issue.changeValue.startsWith('-') ? 'text-accent-red' : 'text-accent-green',
+                    ].join(' ')}
+                  >
+                    {issue.changeValue}
+                  </span>
+                )}
+                <FeedShareButton
+                  permalink={`${origin}/feed/${date}/issue/${issue.id}`}
+                  title={issue.title}
+                  summary={`${issue.entityName} 이슈 카드 스트림`}
+                />
+              </div>
             </div>
             <FeedCardStack cards={issue.cardsData} />
           </section>
