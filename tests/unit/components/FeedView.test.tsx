@@ -71,6 +71,71 @@ const sampleIssue: PublicIssueSummary = {
   ],
 }
 
+const contextIssue: PublicIssueSummary = {
+  id: 'context-kospi',
+  entityType: 'index',
+  entityId: 'KOSPI',
+  entityName: '코스피',
+  title: '코스피 반등',
+  changeValue: '+0.47%',
+  channel: 'v1',
+  displayOrder: 0,
+  tags: ['지수'],
+  cardsData: [
+    {
+      id: 1,
+      type: 'cover',
+      tag: '맥락',
+      title: '코스피 반등',
+      sub: '+0.47% · 외국인 순매수',
+      visual: {
+        bg_from: '#001a0d',
+        bg_via: '#003320',
+        bg_to: '#005533',
+        accent: '#00c853',
+      },
+    },
+    {
+      id: 2,
+      type: 'reason',
+      tag: '이유',
+      title: '외국인 매수세 유입',
+      body: '반도체 중심으로 외국인 순매수가 유입되며 지수가 반등했습니다.',
+      visual: {
+        bg_from: '#001a0d',
+        bg_via: '#003320',
+        bg_to: '#005533',
+        accent: '#00c853',
+      },
+      sources: [
+        {
+          title: '지수 기사',
+          url: 'https://example.com/kospi',
+          domain: 'example.com',
+        },
+      ],
+    },
+    {
+      id: 3,
+      type: 'source',
+      tag: '출처',
+      sources: [
+        {
+          title: '원문',
+          url: 'https://example.com/kospi-source',
+          domain: 'example.com',
+        },
+      ],
+      visual: {
+        bg_from: '#001a0d',
+        bg_via: '#003320',
+        bg_to: '#005533',
+        accent: '#00c853',
+      },
+    },
+  ],
+}
+
 describe('FeedView', () => {
   it('카드 타입별 UI와 출처 링크를 렌더링한다', () => {
     render(<FeedView date="2026-03-20" issues={[sampleIssue]} />)
@@ -84,6 +149,18 @@ describe('FeedView', () => {
     expect(link).toHaveAttribute('href', 'https://example.com/article')
     expect(link).toHaveAttribute('target', '_blank')
     expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+  })
+
+  it('대표 지수·환율 맥락 섹션을 렌더링하고 누락 슬롯은 업데이트 지연으로 표시한다', () => {
+    render(<FeedView date="2026-03-20" issues={[contextIssue, sampleIssue]} />)
+
+    expect(screen.getByText('대표 지수·환율 맥락 카드')).toBeInTheDocument()
+    expect(screen.getByText('코스피')).toBeInTheDocument()
+    expect(screen.getByText('USD/KRW')).toBeInTheDocument()
+    expect(screen.getAllByText('업데이트 지연').length).toBeGreaterThan(0)
+
+    const jumpLink = screen.getByRole('link', { name: '이슈 카드 보기' })
+    expect(jumpLink).toHaveAttribute('href', '#issue-context-kospi')
   })
 
   it('cardsData가 없으면 fallback 안내를 렌더링한다', () => {
