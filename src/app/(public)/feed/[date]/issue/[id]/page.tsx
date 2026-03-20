@@ -3,7 +3,12 @@ import { notFound } from 'next/navigation'
 
 import FeedErrorState from '@/components/features/feed/FeedErrorState'
 import FeedView from '@/components/features/feed/FeedView'
-import { getPublicFeedByDate, getPublicIssueById, isValidDate } from '@/lib/public/feeds'
+import {
+  getPreviousPublishedDate,
+  getPublicFeedByDate,
+  getPublicIssueById,
+  isValidDate,
+} from '@/lib/public/feeds'
 
 type Params = Promise<{ date: string; id: string }>
 
@@ -62,6 +67,7 @@ export default async function IssueSharePage({ params }: { params: Params }) {
 
   // 해당 날짜 전체 피드 조회 (FeedView에 이슈 목록 전달용)
   let issues: Awaited<ReturnType<typeof getPublicFeedByDate>>['issues']
+  let previousDate: string | null = null
 
   try {
     const result = await getPublicFeedByDate(date)
@@ -71,9 +77,10 @@ export default async function IssueSharePage({ params }: { params: Params }) {
     }
 
     issues = result.issues
+    previousDate = await getPreviousPublishedDate(date)
   } catch {
     return <FeedErrorState />
   }
 
-  return <FeedView date={date} issues={issues} initialIssueId={id} />
+  return <FeedView date={date} issues={issues} initialIssueId={id} previousDate={previousDate} />
 }

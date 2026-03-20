@@ -116,6 +116,25 @@ export async function getLatestPublishedDate(): Promise<string | null> {
   return (data as { date: string } | null)?.date ?? null
 }
 
+export async function getPreviousPublishedDate(date: string): Promise<string | null> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('feeds')
+    .select('date')
+    .eq('status', 'published')
+    .lt('date', date)
+    .order('date', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (error) {
+    throw new Error(`이전 feed 조회 실패: ${error.message}`)
+  }
+
+  return (data as { date: string } | null)?.date ?? null
+}
+
 /**
  * 날짜별 published 피드 + approved 이슈 목록 조회.
  * @param date 'YYYY-MM-DD' (호출 전 isValidDate로 검증 필수)

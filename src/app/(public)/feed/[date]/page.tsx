@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import FeedEmptyState from '@/components/features/feed/FeedEmptyState'
 import FeedErrorState from '@/components/features/feed/FeedErrorState'
 import FeedView from '@/components/features/feed/FeedView'
-import { getPublicFeedByDate, isValidDate } from '@/lib/public/feeds'
+import { getPreviousPublishedDate, getPublicFeedByDate, isValidDate } from '@/lib/public/feeds'
 
 type Params = Promise<{ date: string }>
 
@@ -37,18 +37,20 @@ export default async function FeedDatePage({ params }: { params: Params }) {
 
   let feed: { date: string } | null
   let issues: Awaited<ReturnType<typeof getPublicFeedByDate>>['issues']
+  let previousDate: string | null = null
 
   try {
     const result = await getPublicFeedByDate(date)
     feed = result.feed
     issues = result.issues
+    previousDate = await getPreviousPublishedDate(date)
   } catch {
     return <FeedErrorState />
   }
 
   if (!feed) {
-    return <FeedEmptyState date={date} />
+    return <FeedEmptyState date={date} previousDate={previousDate} />
   }
 
-  return <FeedView date={date} issues={issues} />
+  return <FeedView date={date} issues={issues} previousDate={previousDate} />
 }

@@ -138,10 +138,14 @@ const contextIssue: PublicIssueSummary = {
 
 describe('FeedView', () => {
   it('카드 타입별 UI와 출처 링크를 렌더링한다', () => {
-    render(<FeedView date="2026-03-20" issues={[sampleIssue]} />)
+    render(<FeedView date="2026-03-20" issues={[sampleIssue]} previousDate="2026-03-19" />)
 
     expect(screen.getByText('오늘의 이슈 카드 스트림')).toBeInTheDocument()
     expect(screen.getByText('1/3')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: '이전 발행일' })).toHaveAttribute(
+      'href',
+      '/feed/2026-03-19',
+    )
 
     fireEvent.click(screen.getByRole('button', { name: '다음 카드' }))
     expect(screen.getByText('메모리 업황 기대')).toBeInTheDocument()
