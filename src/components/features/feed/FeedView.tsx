@@ -214,7 +214,7 @@ export default function FeedView({ date, issues, initialIssueId, previousDate }:
                   <span className="bg-background/70 text-muted rounded-full px-3 py-1 text-[11px] font-semibold tracking-[0.16em] uppercase">
                     {issue.entityType}
                   </span>
-                  {issue.tags.map((tag) => (
+                  {(issue.tags.length > 0 ? issue.tags : ['기타']).map((tag) => (
                     <span
                       key={tag}
                       className="bg-surface-raised text-muted rounded-full px-3 py-1 text-xs"
