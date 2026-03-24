@@ -178,7 +178,18 @@ export default function FeedView({ date, issues, initialIssueId, previousDate }:
                 <p className="mt-4 line-clamp-3 text-sm leading-6 text-slate-200">{item.summary}</p>
                 <div className="mt-4 flex flex-wrap items-center gap-2">
                   {item.source ? (
-                    <FeedSourceLink source={item.source} />
+                    <FeedSourceLink
+                      source={item.source}
+                      onClick={() =>
+                        trackFeedEvent({
+                          event: 'source_clicked',
+                          entityType: item.entityType,
+                          entityId: item.entityId,
+                          url: item.source!.url,
+                          isLoggedIn: false,
+                        })
+                      }
+                    />
                   ) : (
                     <span className="rounded-full border border-dashed border-white/15 px-3 py-2 text-xs text-white/60">
                       출처 확인 후 업데이트
