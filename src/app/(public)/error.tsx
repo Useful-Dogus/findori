@@ -25,26 +25,28 @@ export default function PublicError({ error, reset }: ErrorProps) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-6 px-4 text-center">
       <div className="flex flex-col items-center gap-2">
-        <p className="text-2xl">⚠️</p>
+        <p className="text-2xl" role="img" aria-label="오류">
+          ⚠️
+        </p>
         <h1 className="text-foreground text-lg font-semibold">피드를 불러오지 못했습니다</h1>
         <p className="text-muted text-sm">잠시 후 다시 시도해 주세요.</p>
       </div>
       <div className="flex flex-wrap justify-center gap-3">
         <button
           onClick={reset}
-          className="bg-accent-blue text-foreground rounded-lg px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-80"
+          className="bg-accent-blue text-foreground rounded-lg px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
         >
           다시 시도
         </button>
         <Link
           href="/"
-          className="bg-surface text-foreground hover:bg-surface-raised rounded-lg px-5 py-2.5 text-sm font-medium transition-colors"
+          className="bg-surface text-foreground hover:bg-surface-raised rounded-lg px-5 py-2.5 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
         >
           홈으로 이동
         </Link>
         <button
           onClick={handleCopyLink}
-          className="bg-surface text-foreground hover:bg-surface-raised rounded-lg px-5 py-2.5 text-sm font-medium transition-colors"
+          className="bg-surface text-foreground hover:bg-surface-raised rounded-lg px-5 py-2.5 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
         >
           {copied ? '복사됨!' : '링크 복사'}
         </button>

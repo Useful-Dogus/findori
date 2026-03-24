@@ -169,7 +169,10 @@ export default function FeedView({ date, issues, initialIssueId, previousDate }:
                         : 'bg-emerald-400/10 text-emerald-200',
                     ].join(' ')}
                   >
-                    {item.issue?.changeValue ?? '업데이트 지연'}
+                    {item.issue?.changeValue
+                      ? (item.issue.changeValue.startsWith('-') ? '▼ ' : '▲ ') +
+                        item.issue.changeValue
+                      : '업데이트 지연'}
                   </span>
                 </div>
                 <p className="mt-4 line-clamp-3 text-sm leading-6 text-slate-200">{item.summary}</p>
@@ -238,7 +241,7 @@ export default function FeedView({ date, issues, initialIssueId, previousDate }:
                       issue.changeValue.startsWith('-') ? 'text-accent-red' : 'text-accent-green',
                     ].join(' ')}
                   >
-                    {issue.changeValue}
+                    {(issue.changeValue.startsWith('-') ? '▼ ' : '▲ ') + issue.changeValue}
                   </span>
                 )}
                 <FeedShareButton
