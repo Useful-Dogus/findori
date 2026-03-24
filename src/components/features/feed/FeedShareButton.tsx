@@ -78,7 +78,7 @@ export default function FeedShareButton({
       <button
         type="button"
         onClick={handleShare}
-        className="min-h-11 rounded-full border border-white/12 px-4 py-2 text-sm font-medium text-white/80 transition hover:border-white/30 hover:text-white"
+        className="min-h-11 rounded-full border border-white/12 px-4 py-2 text-sm font-medium text-white/80 transition hover:border-white/30 hover:text-white focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-1 focus-visible:outline-none"
       >
         공유
       </button>
