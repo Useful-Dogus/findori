@@ -77,8 +77,10 @@ export async function runPipeline(
   const startedAt = new Date()
   const log = await startPipelineRun(client, date, params.triggeredBy, startedAt)
 
+  let collected: Awaited<ReturnType<typeof collectArticles>> | undefined
+
   try {
-    const collected = await collectArticles(client, date)
+    collected = await collectArticles(client, date)
     const generated = await generateIssues(collected.articles)
     const errors = [...collected.errors, ...generated.errors]
 
@@ -127,9 +129,9 @@ export async function runPipeline(
     await finishPipelineRun(client, log.id, {
       status: 'failed',
       completedAt,
-      articlesCollected: 0,
-      articlesRaw: 0,
-      sourceStats: [],
+      articlesCollected: collected?.articles.length ?? 0,
+      articlesRaw: collected?.articlesRaw ?? 0,
+      sourceStats: collected?.sourceStats ?? [],
       issuesCreated: 0,
       errors: [pipelineError],
     })
