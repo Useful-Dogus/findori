@@ -46,6 +46,12 @@ export type ContextMarketData = {
   changePercent: string
 }
 
+export type TokenUsage = {
+  inputTokens: number
+  outputTokens: number
+  estimatedCostUsd: number
+}
+
 export type PipelineLogRow = Tables<'pipeline_logs'>
 
 export type PipelineLogErrorJson = Json
