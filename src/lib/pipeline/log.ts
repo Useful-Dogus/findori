@@ -7,6 +7,7 @@ import type {
   PipelineSourceStat,
   PipelineStatus,
   PipelineTrigger,
+  TokenUsage,
 } from '@/types/pipeline'
 
 const RUNNING_TTL_MS = 360 * 1000
@@ -116,6 +117,7 @@ export async function finishPipelineRun(
     sourceStats: PipelineSourceStat[]
     issuesCreated: number
     errors: PipelineError[]
+    tokenUsage?: TokenUsage
   },
 ) {
   const completedAt = params.completedAt ?? new Date()
@@ -130,6 +132,9 @@ export async function finishPipelineRun(
       source_stats: params.sourceStats,
       issues_created: params.issuesCreated,
       errors: serializeErrors(params.errors),
+      tokens_input: params.tokenUsage?.inputTokens ?? null,
+      tokens_output: params.tokenUsage?.outputTokens ?? null,
+      estimated_cost_usd: params.tokenUsage?.estimatedCostUsd ?? null,
     })
     .eq('id', logId)
     .select('*')

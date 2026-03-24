@@ -152,11 +152,14 @@ export type Database = {
           completed_at: string | null
           date: string
           errors: Json
+          estimated_cost_usd: number | null
           id: string
           issues_created: number
           source_stats: Json
           started_at: string
           status: string
+          tokens_input: number | null
+          tokens_output: number | null
           triggered_by: string
         }
         Insert: {
@@ -165,11 +168,14 @@ export type Database = {
           completed_at?: string | null
           date: string
           errors?: Json
+          estimated_cost_usd?: number | null
           id?: string
           issues_created?: number
           source_stats?: Json
           started_at?: string
           status?: string
+          tokens_input?: number | null
+          tokens_output?: number | null
           triggered_by?: string
         }
         Update: {
@@ -178,11 +184,14 @@ export type Database = {
           completed_at?: string | null
           date?: string
           errors?: Json
+          estimated_cost_usd?: number | null
           id?: string
           issues_created?: number
           source_stats?: Json
           started_at?: string
           status?: string
+          tokens_input?: number | null
+          tokens_output?: number | null
           triggered_by?: string
         }
         Relationships: []

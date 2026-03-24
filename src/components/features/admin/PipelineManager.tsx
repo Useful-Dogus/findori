@@ -30,6 +30,11 @@ function formatDuration(startedAt: string, completedAt: string | null) {
   return `${(ms / 1000).toFixed(1)}s`
 }
 
+function formatCost(cost: number | null) {
+  if (cost === null) return '—'
+  return `$${cost.toFixed(3)}`
+}
+
 export function PipelineManager({ initialLogs, initialTotal }: Props) {
   const [logs, setLogs] = useState(initialLogs)
   const [total, setTotal] = useState(initialTotal)
@@ -113,6 +118,7 @@ export function PipelineManager({ initialLogs, initialTotal }: Props) {
                 <th className="px-4 py-3 text-right font-semibold text-slate-300">기사</th>
                 <th className="px-4 py-3 text-right font-semibold text-slate-300">이슈</th>
                 <th className="px-4 py-3 text-right font-semibold text-slate-300">소요시간</th>
+                <th className="px-4 py-3 text-right font-semibold text-slate-300">비용</th>
                 <th className="px-4 py-3 text-left font-semibold text-slate-300">오류</th>
               </tr>
             </thead>
@@ -138,6 +144,9 @@ export function PipelineManager({ initialLogs, initialTotal }: Props) {
                     <td className="px-4 py-3 text-right">{log.issues_created ?? '—'}</td>
                     <td className="px-4 py-3 text-right text-slate-400">
                       {formatDuration(log.started_at, log.completed_at)}
+                    </td>
+                    <td className="px-4 py-3 text-right text-slate-400">
+                      {formatCost(log.estimated_cost_usd ?? null)}
                     </td>
                     <td className="px-4 py-3">
                       {errors.length === 0 ? (

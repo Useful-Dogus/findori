@@ -7,7 +7,14 @@ import type {
   ContextMarketData,
   GeneratedIssueDraft,
   PipelineError,
+  TokenUsage,
 } from '@/types/pipeline'
+
+// Sonnet 비용: 입력 $3.00/MTok, 출력 $15.00/MTok
+const SONNET_INPUT_COST_PER_TOKEN = 3.0 / 1_000_000
+const SONNET_OUTPUT_COST_PER_TOKEN = 15.0 / 1_000_000
+
+const MAX_ISSUES = 3
 
 const DEFAULT_MODEL = 'claude-sonnet-4-5-20250929'
 const GENERATE_TOOL_NAME = 'generate_cards'
@@ -23,7 +30,7 @@ const generatedIssueSchema = z.object({
 })
 
 const generatedIssuesResponseSchema = z.object({
-  issues: z.array(generatedIssueSchema),
+  issues: z.array(generatedIssueSchema).max(MAX_ISSUES),
 })
 
 type AnthropicClientLike = {
@@ -34,6 +41,7 @@ type AnthropicClientLike = {
         name?: string
         input?: unknown
       }>
+      usage: { input_tokens: number; output_tokens: number }
     }>
   }
 }
@@ -324,7 +332,8 @@ mood는 positive / negative / neutral 중 기사 내용에 맞게 배분하라.
 
 - 투자 권유·유도 표현 절대 금지 (예: "지금 사야 한다", "매수 추천", "강력 매수" 등)
 - 사실 기반 서술만 허용. 미래 예측 단정 표현 금지.
-- 모든 텍스트는 한국어로 작성`
+- 모든 텍스트는 한국어로 작성
+- 이슈는 최대 ${MAX_ISSUES}개만 생성하라. 가장 중요한 이슈를 우선 선택하라.`
 }
 
 // T004: buildPrompt 단순화 — 역할/규칙 지시문 제거, 기사 목록만 포함
@@ -402,15 +411,16 @@ export async function generateIssues(
 ): Promise<{
   issues: GeneratedIssueDraft[]
   errors: PipelineError[]
+  usage: TokenUsage | null
 }> {
   if (articles.length === 0) {
-    return { issues: [], errors: [] }
+    return { issues: [], errors: [], usage: null }
   }
 
   const anthropic = deps.anthropic ?? getAnthropicClient()
   const response = await anthropic.messages.create({
     model: process.env.ANTHROPIC_MODEL ?? DEFAULT_MODEL,
-    max_tokens: 4096,
+    max_tokens: 8192,
     temperature: 0.2,
     system: buildSystemPrompt(),
     messages: [
@@ -427,6 +437,15 @@ export async function generateIssues(
     },
   })
 
+  const inputTokens = response.usage.input_tokens
+  const outputTokens = response.usage.output_tokens
+  const usage: TokenUsage = {
+    inputTokens,
+    outputTokens,
+    estimatedCostUsd:
+      inputTokens * SONNET_INPUT_COST_PER_TOKEN + outputTokens * SONNET_OUTPUT_COST_PER_TOKEN,
+  }
+
   const parsed = generatedIssuesResponseSchema.parse(extractToolInput(response))
   const issues: GeneratedIssueDraft[] = []
   const errors: PipelineError[] = []
@@ -453,7 +472,7 @@ export async function generateIssues(
     })
   }
 
-  return { issues, errors }
+  return { issues, errors, usage }
 }
 
 // T009: generateContextIssues — generateIssues와 동일한 tool_use 패턴, 다른 user prompt
@@ -465,15 +484,16 @@ export async function generateContextIssues(
 ): Promise<{
   issues: GeneratedIssueDraft[]
   errors: PipelineError[]
+  usage: TokenUsage | null
 }> {
   if (contextData.length === 0) {
-    return { issues: [], errors: [] }
+    return { issues: [], errors: [], usage: null }
   }
 
   const anthropic = deps.anthropic ?? getAnthropicClient()
   const response = await anthropic.messages.create({
     model: process.env.ANTHROPIC_MODEL ?? DEFAULT_MODEL,
-    max_tokens: 4096,
+    max_tokens: 8192,
     temperature: 0.2,
     system: buildSystemPrompt(),
     messages: [
@@ -490,6 +510,15 @@ export async function generateContextIssues(
     },
   })
 
+  const inputTokens = response.usage.input_tokens
+  const outputTokens = response.usage.output_tokens
+  const usage: TokenUsage = {
+    inputTokens,
+    outputTokens,
+    estimatedCostUsd:
+      inputTokens * SONNET_INPUT_COST_PER_TOKEN + outputTokens * SONNET_OUTPUT_COST_PER_TOKEN,
+  }
+
   const parsed = generatedIssuesResponseSchema.parse(extractToolInput(response))
   const issues: GeneratedIssueDraft[] = []
   const errors: PipelineError[] = []
@@ -516,5 +545,5 @@ export async function generateContextIssues(
     })
   }
 
-  return { issues, errors }
+  return { issues, errors, usage }
 }

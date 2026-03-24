@@ -1,5 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { collectArticles } from '@/lib/pipeline/collect'
+import { filterArticles } from '@/lib/pipeline/filter'
 import { generateIssues } from '@/lib/pipeline/generate'
 import {
   finishPipelineRun,
@@ -13,6 +14,7 @@ import type {
   PipelineRunResult,
   PipelineStatus,
   PipelineTrigger,
+  TokenUsage,
 } from '@/types/pipeline'
 
 function getKstDateString(date: Date) {
@@ -78,17 +80,33 @@ export async function runPipeline(
   const log = await startPipelineRun(client, date, params.triggeredBy, startedAt)
 
   let collected: Awaited<ReturnType<typeof collectArticles>> | undefined
+  let tokenUsage: TokenUsage | undefined
 
   try {
     collected = await collectArticles(client, date)
-    const generated = await generateIssues(collected.articles)
+
+    const filtered = await filterArticles(collected.articles)
+    const filterUsage = filtered.usage
+
+    const generated = await generateIssues(filtered.articles)
+    const generateUsage = generated.usage
+
+    if (filterUsage || generateUsage) {
+      tokenUsage = {
+        inputTokens: (filterUsage?.inputTokens ?? 0) + (generateUsage?.inputTokens ?? 0),
+        outputTokens: (filterUsage?.outputTokens ?? 0) + (generateUsage?.outputTokens ?? 0),
+        estimatedCostUsd:
+          (filterUsage?.estimatedCostUsd ?? 0) + (generateUsage?.estimatedCostUsd ?? 0),
+      }
+    }
+
     const errors = [...collected.errors, ...generated.errors]
 
     const feed = await ensureDraftFeed(client, date)
     const insertedIssues = await insertDraftIssues(client, feed.id, generated.issues)
 
     const status = resolvePipelineStatus({
-      articlesCollected: collected.articles.length,
+      articlesCollected: filtered.articles.length,
       issuesCreated: insertedIssues.length,
       errors,
     })
@@ -97,11 +115,12 @@ export async function runPipeline(
     await finishPipelineRun(client, log.id, {
       status,
       completedAt,
-      articlesCollected: collected.articles.length,
+      articlesCollected: filtered.articles.length,
       articlesRaw: collected.articlesRaw,
       sourceStats: collected.sourceStats,
       issuesCreated: insertedIssues.length,
       errors,
+      tokenUsage,
     })
 
     return {
@@ -111,7 +130,7 @@ export async function runPipeline(
         log_id: log.id,
         date,
         status,
-        articles_collected: collected.articles.length,
+        articles_collected: filtered.articles.length,
         articles_raw: collected.articlesRaw,
         source_stats: collected.sourceStats,
         issues_created: insertedIssues.length,
@@ -134,6 +153,7 @@ export async function runPipeline(
       sourceStats: collected?.sourceStats ?? [],
       issuesCreated: 0,
       errors: [pipelineError],
+      tokenUsage,
     })
 
     throw error

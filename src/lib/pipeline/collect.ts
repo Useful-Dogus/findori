@@ -40,11 +40,16 @@ function resolvePublishedAt(item: Parser.Item) {
   return item.isoDate ?? item.pubDate ?? null
 }
 
+const MAX_ARTICLES_PER_SOURCE = 30
+const MAX_CONTENT_LENGTH = 500
+
 function buildArticle(source: PipelineSource, item: Parser.Item): CollectedArticle | null {
   const url = normalizeArticleUrl(item)
   if (!url) {
     return null
   }
+
+  const content = item.content?.trim() || item.contentSnippet?.trim() || item.summary?.trim() || ''
 
   return {
     sourceId: source.id,
@@ -53,7 +58,7 @@ function buildArticle(source: PipelineSource, item: Parser.Item): CollectedArtic
     url,
     title: item.title?.trim() || '제목 없음',
     summary: item.contentSnippet?.trim() || item.summary?.trim() || '',
-    content: item.content?.trim() || item.contentSnippet?.trim() || item.summary?.trim() || '',
+    content: content.slice(0, MAX_CONTENT_LENGTH),
     publishedAt: resolvePublishedAt(item),
   }
 }
@@ -110,6 +115,7 @@ export async function collectArticles(
         const feed = await parser.parseURL(source.rss_url)
 
         return feed.items
+          .slice(0, MAX_ARTICLES_PER_SOURCE)
           .map((item) => buildArticle(source, item))
           .filter((article): article is CollectedArticle => article !== null)
           .filter((article) => isSameTargetDate(article.publishedAt, targetDate))
