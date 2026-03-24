@@ -107,7 +107,7 @@ export default function FeedView({ date, issues, initialIssueId, previousDate }:
     <div className="flex min-h-screen flex-col pb-10">
       <header className="border-border border-b px-4 py-4">
         <p className="text-muted text-sm">{date}</p>
-        <div className="mt-2 flex items-end justify-between gap-4">
+        <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="text-foreground text-xl font-semibold">오늘의 이슈 카드 스트림</h1>
             <p className="text-muted mt-1 text-sm">이슈 {issues.length}건</p>
@@ -144,11 +144,11 @@ export default function FeedView({ date, issues, initialIssueId, previousDate }:
               </p>
               <h2 className="mt-2 text-xl font-semibold text-white">대표 지수·환율 맥락 카드</h2>
             </div>
-            <p className="max-w-xl text-sm leading-6 text-slate-300">
+            <p className="max-w-full text-sm leading-6 text-slate-300 sm:max-w-xl">
               코스피, 나스닥, USD/KRW 흐름을 먼저 확인하고 개별 이슈 카드로 내려가세요.
             </p>
           </div>
-          <div className="mt-5 grid gap-4 lg:grid-cols-3">
+          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {contextIssues.map((item) => (
               <article
                 key={item.entityId}

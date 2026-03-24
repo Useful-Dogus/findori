@@ -236,7 +236,7 @@ export default function FeedCardStack({ cards, entityType, entityId }: FeedCardS
       >
         <article
           key={activeCard.id}
-          className="overflow-hidden rounded-[28px] border px-5 py-5 text-white sm:px-6 sm:py-6"
+          className="overflow-hidden rounded-[28px] border px-4 py-5 text-white sm:px-6 sm:py-6"
           style={cardStyle(activeCard)}
         >
           <div className="space-y-5">
