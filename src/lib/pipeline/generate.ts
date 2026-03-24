@@ -410,7 +410,7 @@ export async function generateIssues(
   const anthropic = deps.anthropic ?? getAnthropicClient()
   const response = await anthropic.messages.create({
     model: process.env.ANTHROPIC_MODEL ?? DEFAULT_MODEL,
-    max_tokens: 4096,
+    max_tokens: 8192,
     temperature: 0.2,
     system: buildSystemPrompt(),
     messages: [
@@ -473,7 +473,7 @@ export async function generateContextIssues(
   const anthropic = deps.anthropic ?? getAnthropicClient()
   const response = await anthropic.messages.create({
     model: process.env.ANTHROPIC_MODEL ?? DEFAULT_MODEL,
-    max_tokens: 4096,
+    max_tokens: 8192,
     temperature: 0.2,
     system: buildSystemPrompt(),
     messages: [
