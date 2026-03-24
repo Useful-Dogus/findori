@@ -1,10 +1,19 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-export default function FeedErrorState() {
+type ErrorProps = {
+  error: Error & { digest?: string }
+  reset: () => void
+}
+
+export default function PublicError({ error, reset }: ErrorProps) {
   const [copied, setCopied] = useState(false)
+
+  useEffect(() => {
+    console.error(error)
+  }, [error])
 
   function handleCopyLink() {
     navigator.clipboard.writeText(window.location.href).then(() => {
@@ -22,7 +31,7 @@ export default function FeedErrorState() {
       </div>
       <div className="flex flex-wrap justify-center gap-3">
         <button
-          onClick={() => window.location.reload()}
+          onClick={reset}
           className="bg-accent-blue text-foreground rounded-lg px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-80"
         >
           다시 시도

@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 
 type FeedEmptyStateProps = {
@@ -20,10 +22,16 @@ export default function FeedEmptyState({ date, previousDate }: FeedEmptyStatePro
         </p>
       </div>
       <div className="flex flex-wrap justify-center gap-3">
+        <button
+          onClick={() => window.location.reload()}
+          className="bg-accent-blue text-foreground rounded-lg px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-80"
+        >
+          재시도
+        </button>
         {previousDate ? (
           <Link
             href={`/feed/${previousDate}`}
-            className="bg-accent-blue text-foreground rounded-lg px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-80"
+            className="bg-surface text-foreground hover:bg-surface-raised rounded-lg px-5 py-2.5 text-sm font-medium transition-colors"
           >
             이전 발행일 보기
           </Link>
