@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils'
 const NAV_ITEMS: Array<{ href: Route; label: string }> = [
   { href: '/admin', label: '피드' },
   { href: '/admin/sources', label: '매체' },
+  { href: '/admin/pipeline', label: '파이프라인' },
 ]
 
 export function AdminNav() {
