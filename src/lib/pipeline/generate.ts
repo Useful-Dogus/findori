@@ -22,7 +22,7 @@ const GENERATE_TOOL_NAME = 'generate_cards'
 const generatedIssueSchema = z.object({
   entity_id: z.string().min(1),
   entity_name: z.string().min(1),
-  entity_type: z.enum(['stock', 'index', 'currency', 'theme']),
+  entity_type: z.enum(['stock', 'index', 'fx', 'theme']),
   title: z.string().min(1),
   cards: z.unknown(),
   change_value: z.string().nullable().optional(),
@@ -62,7 +62,7 @@ function buildToolSchema() {
               entity_name: { type: 'string' },
               entity_type: {
                 type: 'string',
-                enum: ['stock', 'index', 'currency', 'theme'],
+                enum: ['stock', 'index', 'fx', 'theme'],
               },
               title: { type: 'string' },
               change_value: { type: ['string', 'null'] },
