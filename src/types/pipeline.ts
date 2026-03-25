@@ -30,7 +30,7 @@ export type CollectedArticle = {
 export type GeneratedIssueDraft = {
   entityId: string
   entityName: string
-  entityType: 'stock' | 'index' | 'currency' | 'theme'
+  entityType: 'stock' | 'index' | 'fx' | 'theme'
   title: string
   cards: Card[]
   changeValue: string | null
@@ -40,7 +40,7 @@ export type GeneratedIssueDraft = {
 export type ContextMarketData = {
   entityId: string
   entityName: string
-  entityType: 'index' | 'currency'
+  entityType: 'index' | 'fx'
   value: string
   change: string
   changePercent: string
