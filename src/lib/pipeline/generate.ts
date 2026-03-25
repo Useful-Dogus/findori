@@ -398,7 +398,18 @@ function extractToolInput(message: {
     throw new Error('Claude 응답에서 tool_use 입력을 찾지 못했습니다.')
   }
 
-  return toolUse.input
+  const input = toolUse.input as Record<string, unknown>
+
+  // Claude가 issues를 JSON 문자열로 반환하는 경우 파싱
+  if (typeof input.issues === 'string') {
+    try {
+      input.issues = JSON.parse(input.issues)
+    } catch {
+      throw new Error('issues 필드가 유효하지 않은 JSON 문자열입니다.')
+    }
+  }
+
+  return input
 }
 
 // T003: system: buildSystemPrompt() 파라미터 추가
