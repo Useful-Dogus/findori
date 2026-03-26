@@ -4,7 +4,6 @@
 import type { Card } from '@/types/cards'
 import { parseCards } from '@/lib/cards'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { createClient } from '@/lib/supabase/server'
 
 // ── 에러 클래스 ──────────────────────────────────────────────────────────
 
@@ -99,7 +98,7 @@ export function isValidDate(dateStr: string): boolean {
  * issues(count) 집계로 N+1 방지
  */
 export async function getAdminFeeds(): Promise<AdminFeedSummary[]> {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from('feeds')
@@ -148,7 +147,7 @@ export async function getAdminFeedByDate(date: string): Promise<{
   feed: AdminFeedSummary | null
   issues: AdminIssueSummary[]
 }> {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   // Step 1: 피드 조회
   const { data: feedData, error: feedError } = await supabase
