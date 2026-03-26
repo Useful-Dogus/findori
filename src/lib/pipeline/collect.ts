@@ -41,7 +41,7 @@ function resolvePublishedAt(item: Parser.Item) {
 }
 
 const MAX_ARTICLES_PER_SOURCE = 30
-const MAX_CONTENT_LENGTH = 500
+const MAX_CONTENT_LENGTH = 1500
 
 function buildArticle(source: PipelineSource, item: Parser.Item): CollectedArticle | null {
   const url = normalizeArticleUrl(item)
