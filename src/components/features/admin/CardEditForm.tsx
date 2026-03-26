@@ -42,6 +42,16 @@ function getValidationError(card: Card): string | null {
       return null
     case 'source':
       return null
+    // Phase 2 신규 타입 — Admin 편집 폼은 기존 타입만 지원
+    case 'delta':
+    case 'delta-intro':
+    case 'cause':
+    case 'stat':
+    case 'compare':
+    case 'impact':
+    case 'verdict':
+    case 'question':
+      return null
   }
 }
 

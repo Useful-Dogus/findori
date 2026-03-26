@@ -13,8 +13,17 @@ import {
   type CommunityCard,
   type StatsCard,
   type SourceCard,
+  type DeltaCard,
+  type DeltaIntroCard,
+  type CauseCard,
+  type StatCard,
+  type CompareCard,
+  type ImpactCard,
+  type VerdictCard,
+  type QuestionCard,
   CARD_COUNT_MIN,
   CARD_COUNT_MAX,
+  FIRST_CARD_TYPES,
 } from '@/types/cards'
 
 // ── 공통 서브 스키마 ─────────────────────────────────────────────────────────
@@ -48,6 +57,22 @@ const statsItemSchema = z.object({
   label: z.string(),
   value: z.string(),
   change: z.string().optional(),
+})
+
+// ── Phase 2 신규 서브 스키마 ──────────────────────────────────────────────────
+
+const compareRowSchema = z.object({
+  label: z.string(),
+  change: z.string(),
+  dir: z.enum(['up', 'down', 'worst']),
+  note: z.string(),
+})
+
+const impactItemSchema = z.object({
+  label: z.string(),
+  before: z.string().min(1, { message: 'before는 비어있을 수 없습니다' }),
+  after: z.string().min(1, { message: 'after는 비어있을 수 없습니다' }),
+  diff: z.string(),
 })
 
 // ── 카드별 Zod 스키마 ────────────────────────────────────────────────────────
@@ -122,7 +147,96 @@ const sourceCardSchema = z.object({
   visual: cardVisualSchema,
 })
 
-// T006: 통합 카드 스키마 (discriminatedUnion) + 배열 스키마 (순서·개수 제약)
+// ── Phase 2 신규 카드 타입 스키마 ────────────────────────────────────────────
+
+const deltaCardSchema = z.object({
+  id: z.number().int(),
+  type: z.literal('delta'),
+  tag: z.string(),
+  before: z.string().min(1, { message: 'before는 비어있을 수 없습니다' }),
+  after: z.string().min(1, { message: 'after는 비어있을 수 없습니다' }),
+  period: z.string().min(1, { message: 'period는 비어있을 수 없습니다' }),
+  context: z.string(),
+  visual: cardVisualSchema,
+})
+
+const deltaIntroCardSchema = z.object({
+  id: z.number().int(),
+  type: z.literal('delta-intro'),
+  tag: z.string(),
+  before: z.string().min(1, { message: 'before는 비어있을 수 없습니다' }),
+  after: z.string().min(1, { message: 'after는 비어있을 수 없습니다' }),
+  period: z.string().min(1, { message: 'period는 비어있을 수 없습니다' }),
+  what: z.string(),
+  whatDesc: z.string(),
+  trigger: z.string(),
+  visual: cardVisualSchema,
+})
+
+const causeCardSchema = z.object({
+  id: z.number().int(),
+  type: z.literal('cause'),
+  tag: z.string(),
+  result: z.string(),
+  cause: z.string(),
+  sources: z.array(cardSourceSchema).min(1, { message: 'sources는 최소 1개 이상이어야 합니다' }),
+  visual: cardVisualSchema,
+})
+
+const statCardSchema = z.object({
+  id: z.number().int(),
+  type: z.literal('stat'),
+  tag: z.string(),
+  number: z.string(),
+  label: z.string(),
+  reveal: z.string(),
+  sources: z.array(cardSourceSchema).min(1, { message: 'sources는 최소 1개 이상이어야 합니다' }),
+  visual: cardVisualSchema,
+})
+
+const compareCardSchema = z.object({
+  id: z.number().int(),
+  type: z.literal('compare'),
+  tag: z.string(),
+  q: z.string(),
+  rows: z.array(compareRowSchema).min(2, { message: 'rows는 최소 2개 이상이어야 합니다' }),
+  footer: z.string(),
+  visual: cardVisualSchema,
+})
+
+const impactCardSchema = z.object({
+  id: z.number().int(),
+  type: z.literal('impact'),
+  tag: z.string(),
+  items: z
+    .array(impactItemSchema)
+    .min(2, { message: 'items는 최소 2개 이상이어야 합니다' })
+    .max(4, { message: 'items는 최대 4개 이하여야 합니다' }),
+  visual: cardVisualSchema,
+})
+
+const verdictCardSchema = z.object({
+  id: z.number().int(),
+  type: z.literal('verdict'),
+  tag: z.string(),
+  verdict: z.string(),
+  reasons: z
+    .array(z.string())
+    .min(2, { message: 'reasons는 최소 2개 이상이어야 합니다' })
+    .max(3, { message: 'reasons는 최대 3개 이하여야 합니다' }),
+  visual: cardVisualSchema,
+})
+
+const questionCardSchema = z.object({
+  id: z.number().int(),
+  type: z.literal('question'),
+  tag: z.string(),
+  q: z.string(),
+  hint: z.string(),
+  visual: cardVisualSchema,
+})
+
+// ── 통합 카드 스키마 (discriminatedUnion) + 배열 스키마 (순서·개수 제약) ────
 
 const cardSchema = z.discriminatedUnion('type', [
   coverCardSchema,
@@ -132,15 +246,28 @@ const cardSchema = z.discriminatedUnion('type', [
   communityCardSchema,
   statsCardSchema,
   sourceCardSchema,
+  // Phase 2 신규 타입
+  deltaCardSchema,
+  deltaIntroCardSchema,
+  causeCardSchema,
+  statCardSchema,
+  compareCardSchema,
+  impactCardSchema,
+  verdictCardSchema,
+  questionCardSchema,
 ])
 
 const cardsArraySchema = z
   .array(cardSchema)
   .min(CARD_COUNT_MIN, { message: `카드는 최소 ${CARD_COUNT_MIN}장 이상이어야 합니다` })
   .max(CARD_COUNT_MAX, { message: `카드는 최대 ${CARD_COUNT_MAX}장 이하여야 합니다` })
-  .refine((cards) => cards.length > 0 && cards[0].type === 'cover', {
-    message: '첫 번째 카드는 반드시 cover 타입이어야 합니다',
-  })
+  .refine(
+    (cards) =>
+      cards.length > 0 && (FIRST_CARD_TYPES as readonly string[]).includes(cards[0].type),
+    {
+      message: `첫 번째 카드는 반드시 ${FIRST_CARD_TYPES.join(' | ')} 타입 중 하나여야 합니다`,
+    },
+  )
   .refine((cards) => cards.length > 0 && cards[cards.length - 1].type === 'source', {
     message: '마지막 카드는 반드시 source 타입이어야 합니다',
   })
@@ -206,4 +333,38 @@ export function isStatsCard(card: Card): card is StatsCard {
 
 export function isSourceCard(card: Card): card is SourceCard {
   return card.type === 'source'
+}
+
+// ── Phase 2 신규 타입 가드 ────────────────────────────────────────────────────
+
+export function isDeltaCard(card: Card): card is DeltaCard {
+  return card.type === 'delta'
+}
+
+export function isDeltaIntroCard(card: Card): card is DeltaIntroCard {
+  return card.type === 'delta-intro'
+}
+
+export function isCauseCard(card: Card): card is CauseCard {
+  return card.type === 'cause'
+}
+
+export function isStatCard(card: Card): card is StatCard {
+  return card.type === 'stat'
+}
+
+export function isCompareCard(card: Card): card is CompareCard {
+  return card.type === 'compare'
+}
+
+export function isImpactCard(card: Card): card is ImpactCard {
+  return card.type === 'impact'
+}
+
+export function isVerdictCard(card: Card): card is VerdictCard {
+  return card.type === 'verdict'
+}
+
+export function isQuestionCard(card: Card): card is QuestionCard {
+  return card.type === 'question'
 }

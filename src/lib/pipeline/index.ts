@@ -1,5 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { collectArticles } from '@/lib/pipeline/collect'
+import { extractFacts } from '@/lib/pipeline/extract'
 import { filterArticles } from '@/lib/pipeline/filter'
 import { generateIssues } from '@/lib/pipeline/generate'
 import {
@@ -88,15 +89,29 @@ export async function runPipeline(
     const filtered = await filterArticles(collected.articles)
     const filterUsage = filtered.usage
 
-    const generated = await generateIssues(filtered.articles)
+    // Phase 2: 팩트 추출 단계 (Haiku) — 실패 시 null로 fallback
+    const extracted = await extractFacts(filtered.articles)
+    const extractUsage = extracted.usage
+
+    const generated = await generateIssues(filtered.articles, {
+      extractedFacts: extracted.facts,
+    })
     const generateUsage = generated.usage
 
-    if (filterUsage || generateUsage) {
+    if (filterUsage || extractUsage || generateUsage) {
       tokenUsage = {
-        inputTokens: (filterUsage?.inputTokens ?? 0) + (generateUsage?.inputTokens ?? 0),
-        outputTokens: (filterUsage?.outputTokens ?? 0) + (generateUsage?.outputTokens ?? 0),
+        inputTokens:
+          (filterUsage?.inputTokens ?? 0) +
+          (extractUsage?.inputTokens ?? 0) +
+          (generateUsage?.inputTokens ?? 0),
+        outputTokens:
+          (filterUsage?.outputTokens ?? 0) +
+          (extractUsage?.outputTokens ?? 0) +
+          (generateUsage?.outputTokens ?? 0),
         estimatedCostUsd:
-          (filterUsage?.estimatedCostUsd ?? 0) + (generateUsage?.estimatedCostUsd ?? 0),
+          (filterUsage?.estimatedCostUsd ?? 0) +
+          (extractUsage?.estimatedCostUsd ?? 0) +
+          (generateUsage?.estimatedCostUsd ?? 0),
       }
     }
 
@@ -161,6 +176,7 @@ export async function runPipeline(
 }
 
 export { collectArticles } from '@/lib/pipeline/collect'
+export { extractFacts } from '@/lib/pipeline/extract'
 export { generateContextIssues, generateIssues } from '@/lib/pipeline/generate'
 export { listPipelineLogs } from '@/lib/pipeline/log'
 export { ensureDraftFeed, insertDraftIssues } from '@/lib/pipeline/store'
