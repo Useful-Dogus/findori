@@ -27,6 +27,23 @@ function getCardSummary(card: Card): string {
       return card.items.map((item) => `${item.label} ${item.value}`).join(' / ')
     case 'source':
       return card.sources.map((source) => source.domain).join(', ')
+    // Phase 2 신규 타입
+    case 'delta':
+      return `${card.before} → ${card.after} (${card.period})`
+    case 'delta-intro':
+      return `${card.what}: ${card.before} → ${card.after}`
+    case 'cause':
+      return card.result
+    case 'stat':
+      return `${card.number} ${card.label}`
+    case 'compare':
+      return card.q
+    case 'impact':
+      return card.items.map((item) => item.label).join(' / ')
+    case 'verdict':
+      return card.verdict
+    case 'question':
+      return card.q
   }
 }
 
