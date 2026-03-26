@@ -2,6 +2,8 @@ import { PipelineManager } from '@/components/features/admin/PipelineManager'
 import { listPipelineLogs } from '@/lib/pipeline'
 import { createAdminClient } from '@/lib/supabase/admin'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminPipelinePage() {
   try {
     const client = createAdminClient()

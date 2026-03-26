@@ -1,6 +1,8 @@
 import { SourcesManager } from '@/components/features/admin/SourcesManager'
 import { getAdminSources } from '@/lib/admin/sources'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminSourcesPage() {
   try {
     const sources = await getAdminSources()
