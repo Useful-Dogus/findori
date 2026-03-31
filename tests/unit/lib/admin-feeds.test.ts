@@ -17,12 +17,10 @@ const mockEq = vi.fn()
 const mockMaybeSingle = vi.fn()
 const mockFrom = vi.fn()
 
-vi.mock('@/lib/supabase/server', () => ({
-  createClient: vi.fn(() =>
-    Promise.resolve({
-      from: mockFrom,
-    }),
-  ),
+vi.mock('@/lib/supabase/admin', () => ({
+  createAdminClient: vi.fn(() => ({
+    from: mockFrom,
+  })),
 }))
 
 // 쿼리 체인 헬퍼

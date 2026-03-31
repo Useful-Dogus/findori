@@ -105,6 +105,7 @@ describe('generateIssues', () => {
               },
             },
           ],
+          usage: { input_tokens: 0, output_tokens: 0 },
         }),
       },
     }
@@ -144,6 +145,7 @@ describe('generateIssues', () => {
               },
             },
           ],
+          usage: { input_tokens: 0, output_tokens: 0 },
         }),
       },
     }
@@ -164,7 +166,7 @@ describe('generateIssues', () => {
 
     const result = await generateIssues([], { anthropic })
 
-    expect(result).toEqual({ issues: [], errors: [] })
+    expect(result).toEqual({ issues: [], errors: [], usage: null })
     expect(anthropic.messages.create).not.toHaveBeenCalled()
   })
 
@@ -180,6 +182,7 @@ describe('generateIssues', () => {
               input: { issues: [] },
             },
           ],
+          usage: { input_tokens: 0, output_tokens: 0 },
         }),
       },
     }
@@ -216,6 +219,7 @@ describe('generateIssues', () => {
               },
             },
           ],
+          usage: { input_tokens: 0, output_tokens: 0 },
         }),
       },
     }
@@ -252,6 +256,7 @@ describe('generateContextIssues', () => {
               },
             },
           ],
+          usage: { input_tokens: 0, output_tokens: 0 },
         }),
       },
     }
@@ -279,7 +284,7 @@ describe('generateContextIssues', () => {
 
     const result = await generateContextIssues([], { anthropic })
 
-    expect(result).toEqual({ issues: [], errors: [] })
+    expect(result).toEqual({ issues: [], errors: [], usage: null })
     expect(anthropic.messages.create).not.toHaveBeenCalled()
   })
 
@@ -304,15 +309,16 @@ describe('generateContextIssues', () => {
                   {
                     entity_id: 'USD-KRW',
                     entity_name: '달러-원',
-                    entity_type: 'currency',
+                    entity_type: 'fx',
                     title: '달러 강세',
-                    // schema 위반: cover와 source만 있고 중간 카드 없어 최소 3장 미충족
+                    // cards 검증 위반: cover와 source만 있고 중간 카드 없어 최소 3장 미충족
                     cards: [VALID_CARDS[0], VALID_CARDS[2]],
                   },
                 ],
               },
             },
           ],
+          usage: { input_tokens: 0, output_tokens: 0 },
         }),
       },
     }

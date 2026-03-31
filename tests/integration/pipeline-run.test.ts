@@ -4,6 +4,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const {
   collectArticlesMock,
+  filterArticlesMock,
+  extractFactsMock,
   generateIssuesMock,
   getActivePipelineRunMock,
   markStalePipelineRunsMock,
@@ -14,6 +16,8 @@ const {
   createAdminClientMock,
 } = vi.hoisted(() => ({
   collectArticlesMock: vi.fn(),
+  filterArticlesMock: vi.fn(),
+  extractFactsMock: vi.fn(),
   generateIssuesMock: vi.fn(),
   getActivePipelineRunMock: vi.fn(),
   markStalePipelineRunsMock: vi.fn(),
@@ -26,6 +30,14 @@ const {
 
 vi.mock('@/lib/pipeline/collect', () => ({
   collectArticles: collectArticlesMock,
+}))
+
+vi.mock('@/lib/pipeline/filter', () => ({
+  filterArticles: filterArticlesMock,
+}))
+
+vi.mock('@/lib/pipeline/extract', () => ({
+  extractFacts: extractFactsMock,
 }))
 
 vi.mock('@/lib/pipeline/generate', () => ({
@@ -56,6 +68,8 @@ describe('runPipeline', () => {
     vi.clearAllMocks()
     createAdminClientMock.mockReturnValue({ name: 'admin-client' })
     markStalePipelineRunsMock.mockResolvedValue(undefined)
+    filterArticlesMock.mockResolvedValue({ articles: [], usage: null, skipped: false })
+    extractFactsMock.mockResolvedValue({ facts: null, usage: null })
   })
 
   it('returns duplicate when there is an active running log', async () => {
@@ -89,7 +103,14 @@ describe('runPipeline', () => {
           url: 'https://news.test/1',
         },
       ],
+      articlesRaw: 1,
+      sourceStats: [],
       errors: [{ source: 'Source One', message: 'RSS fetch timeout' }],
+    })
+    filterArticlesMock.mockResolvedValue({
+      articles: [{ url: 'https://news.test/1' }],
+      usage: null,
+      skipped: false,
     })
     generateIssuesMock.mockResolvedValue({
       issues: [
