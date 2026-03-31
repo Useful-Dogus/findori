@@ -18,7 +18,7 @@ const SONNET_OUTPUT_COST_PER_TOKEN = 15.0 / 1_000_000
 
 const MAX_ISSUES = 3
 
-const DEFAULT_MODEL = 'claude-sonnet-4-5-20250929'
+const DEFAULT_MODEL = 'claude-sonnet-4-6'
 const GENERATE_TOOL_NAME = 'generate_cards'
 
 const generatedIssueSchema = z.object({
@@ -38,6 +38,7 @@ const generatedIssuesResponseSchema = z.object({
 type AnthropicClientLike = {
   messages: {
     create: (params: Record<string, unknown>) => Promise<{
+      stop_reason: string | null
       content: Array<{
         type: string
         name?: string
@@ -441,13 +442,22 @@ function getAnthropicClient() {
   })
 }
 
-function extractToolInput(message: {
-  content: Array<{
-    type: string
-    name?: string
-    input?: unknown
-  }>
-}) {
+function extractToolInput(
+  message: {
+    stop_reason: string | null
+    content: Array<{
+      type: string
+      name?: string
+      input?: unknown
+    }>
+  },
+) {
+  if (message.stop_reason === 'max_tokens') {
+    throw new Error(
+      'LLM 출력이 max_tokens 한도에 도달해 잘렸습니다. 출력 토큰 한도를 늘리거나 요청을 줄이세요.',
+    )
+  }
+
   const toolUse = message.content.find(
     (block) => block.type === 'tool_use' && block.name === GENERATE_TOOL_NAME,
   )
@@ -463,6 +473,7 @@ function extractToolInput(message: {
     try {
       input.issues = JSON.parse(input.issues)
     } catch {
+      console.error('[generate] issues 파싱 실패. raw:', (input.issues as string).slice(0, 200))
       throw new Error('issues 필드가 유효하지 않은 JSON 문자열입니다.')
     }
   }
@@ -490,7 +501,7 @@ export async function generateIssues(
   const anthropic = deps.anthropic ?? getAnthropicClient()
   const response = await anthropic.messages.create({
     model: process.env.ANTHROPIC_MODEL ?? DEFAULT_MODEL,
-    max_tokens: 8192,
+    max_tokens: 16000,
     temperature: 0.7,
     system: buildSystemPrompt(),
     messages: [
@@ -563,7 +574,7 @@ export async function generateContextIssues(
   const anthropic = deps.anthropic ?? getAnthropicClient()
   const response = await anthropic.messages.create({
     model: process.env.ANTHROPIC_MODEL ?? DEFAULT_MODEL,
-    max_tokens: 8192,
+    max_tokens: 16000,
     temperature: 0.7,
     system: buildSystemPrompt(),
     messages: [
