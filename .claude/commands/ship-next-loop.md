@@ -46,12 +46,15 @@ $ARGUMENTS
 
 ## 각 사이클 실행 순서
 
-### 1. 안전 확인
+### 1. 원격 상태 갱신 및 안전 확인
 
 ```sh
 git fetch origin main
+git log origin/main --oneline -3
 git status --short
 ```
+
+사이클을 시작하기 전 반드시 `origin/main`의 최신 상태를 확인한다. 로컬 main이 아닌 최신 원격 main을 기준으로 worktree를 생성한다.
 
 현재 작업 트리에 사용자 변경사항이 있으면 해당 트리를 건드리지 않고 sibling worktree를 사용한다.
 
@@ -94,6 +97,7 @@ gh pr view --json number,url,state,reviewDecision,statusCheckRollup,mergeable,me
 **리뷰 상태 처리 규칙**:
 - 저장소가 독립적인 인간 승인을 명확히 요구하고 그 승인이 없으면 머지하지 않는다
 - blocking 리뷰를 무시하거나 dismiss하지 않는다
+- 리뷰 피드백에 응답하여 push한 후에는 PR 리뷰와 체크를 반드시 다시 확인한다
 
 ### 6. 머지
 
@@ -131,6 +135,7 @@ git branch -d issue/[이슈번호]-[짧은-설명]
 
 - 남은 큐 항목 확인
 - 중단 조건 재확인
+- 다음 큐 항목이 방금 머지된 main 기준으로 여전히 안전한지 재검증 (의존성, 충돌 여부)
 - 계속 진행하면 1번으로 돌아감
 
 ## 중단 조건
