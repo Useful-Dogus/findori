@@ -11,7 +11,7 @@ description: 저장소와 GitHub 상태를 분석하여 실행 가능한 작업 
 
 **열린 이슈 전체:**
 ```
-!`gh issue list --state open --limit 30 --json number,title,labels,milestone,assignees | jq -r '.[] | "#\(.number) [\(.labels | map(.name) | join(","))] \(.title)"'`
+!`gh issue list --state open --limit 30 --json number,title,labels,milestone,assignees | jq -r '.[] | "#\(.number) [\(.labels | map(.name) | join(","))] \(if .milestone then "[milestone:\(.milestone.title)]" else "" end) \(.title)"'`
 ```
 
 **현재 열린 PR:**
@@ -104,6 +104,7 @@ description: 저장소와 GitHub 상태를 분석하여 실행 가능한 작업 
 - 크리티컬 패스 언블로커를 코스메틱 작업보다 우선
 - 수락 기준이 이미 명확한 이슈 우선
 - 열린 PR이나 미해결 설계 결정과 충돌 가능성이 있는 항목은 큐에 넣지 않음
+- 준비된 작업이 없으면 빈 큐를 억지로 채우지 않고 이유를 명확히 보고한다
 
 ## ship-next-loop 핸드오프 준비
 
