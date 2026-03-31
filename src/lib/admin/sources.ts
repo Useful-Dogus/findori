@@ -103,10 +103,7 @@ export async function createSource(params: {
  * 매체 활성/비활성 토글 (PATCH)
  * @throws SourceNotFoundError — 해당 id의 매체가 없을 때
  */
-export async function toggleSourceActive(
-  id: string,
-  active: boolean,
-): Promise<AdminMediaSource> {
+export async function toggleSourceActive(id: string, active: boolean): Promise<AdminMediaSource> {
   const client = createAdminClient()
 
   const { data, error } = await client

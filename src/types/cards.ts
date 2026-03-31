@@ -114,10 +114,10 @@ export type DeltaCard = {
   id: number
   type: 'delta'
   tag: string
-  before: string   // 변화 이전 값 (예: "1,280원")
-  after: string    // 변화 이후 값 (예: "1,500원")
-  period: string   // 기간 (예: "2년 만에")
-  context: string  // 1문장 해석, 80자 이내
+  before: string // 변화 이전 값 (예: "1,280원")
+  after: string // 변화 이후 값 (예: "1,500원")
+  period: string // 기간 (예: "2년 만에")
+  context: string // 1문장 해석, 80자 이내
   visual: CardVisual
 }
 
@@ -126,12 +126,12 @@ export type DeltaIntroCard = {
   id: number
   type: 'delta-intro'
   tag: string
-  before: string    // 기준값
-  after: string     // 변화 후 값
-  period: string    // 기간
-  what: string      // 주체 이름
-  whatDesc: string  // 주체 설명, 2문장 이내
-  trigger: string   // 지금 왜 주목받는가, 1문장
+  before: string // 기준값
+  after: string // 변화 후 값
+  period: string // 기간
+  what: string // 주체 이름
+  whatDesc: string // 주체 설명, 2문장 이내
+  trigger: string // 지금 왜 주목받는가, 1문장
   visual: CardVisual
 }
 
@@ -140,8 +140,8 @@ export type CauseCard = {
   id: number
   type: 'cause'
   tag: string
-  result: string    // 결과 (30자 이내) — 강조 표시됨
-  cause: string     // 원인 설명 (3줄/120자 이내)
+  result: string // 결과 (30자 이내) — 강조 표시됨
+  cause: string // 원인 설명 (3줄/120자 이내)
   sources: CardSource[]
   visual: CardVisual
 }
@@ -151,18 +151,18 @@ export type StatCard = {
   id: number
   type: 'stat'
   tag: string
-  number: string  // 수치 (예: "771조원")
-  label: string   // 수치 레이블
-  reveal: string  // 상식을 뒤집는 해석, 2줄/80자 이내
+  number: string // 수치 (예: "771조원")
+  label: string // 수치 레이블
+  reveal: string // 상식을 뒤집는 해석, 2줄/80자 이내
   sources: CardSource[]
   visual: CardVisual
 }
 
 export type CompareRow = {
-  label: string                    // 비교 항목 이름
-  change: string                   // 변화량 (예: "+10%")
-  dir: 'up' | 'down' | 'worst'    // 방향 ('worst'는 이슈 주인공)
-  note: string                     // 한 줄 설명
+  label: string // 비교 항목 이름
+  change: string // 변화량 (예: "+10%")
+  dir: 'up' | 'down' | 'worst' // 방향 ('worst'는 이슈 주인공)
+  note: string // 한 줄 설명
 }
 
 /** 비교 테이블 — 비교 데이터로 신뢰 구축 */
@@ -170,17 +170,17 @@ export type CompareCard = {
   id: number
   type: 'compare'
   tag: string
-  q: string             // 비교 질문
-  rows: CompareRow[]    // 최소 2개
-  footer: string        // 결론 또는 맥락 문장
+  q: string // 비교 질문
+  rows: CompareRow[] // 최소 2개
+  footer: string // 결론 또는 맥락 문장
   visual: CardVisual
 }
 
 export type ImpactItem = {
-  label: string  // 항목 이름
+  label: string // 항목 이름
   before: string // 이전 금액
-  after: string  // 현재 금액
-  diff: string   // 차이 (예: "+22,000원") 또는 상태 ("위험"/"주의")
+  after: string // 현재 금액
+  diff: string // 차이 (예: "+22,000원") 또는 상태 ("위험"/"주의")
 }
 
 /** 독자 실생활 영향 — 환율/물가/금리 이슈에서 지갑 영향 */
@@ -188,7 +188,7 @@ export type ImpactCard = {
   id: number
   type: 'impact'
   tag: string
-  items: ImpactItem[]  // 2-4개
+  items: ImpactItem[] // 2-4개
   visual: CardVisual
 }
 
@@ -197,8 +197,8 @@ export type VerdictCard = {
   id: number
   type: 'verdict'
   tag: string
-  verdict: string    // 결론 한 문장, 50자 이내
-  reasons: string[]  // 근거 2-3개 (각 60자 이내)
+  verdict: string // 결론 한 문장, 50자 이내
+  reasons: string[] // 근거 2-3개 (각 60자 이내)
   visual: CardVisual
 }
 
@@ -207,8 +207,8 @@ export type QuestionCard = {
   id: number
   type: 'question'
   tag: string
-  q: string     // 독자 궁금증 자극 질문
-  hint: string  // 힌트 (다음 카드 일부 공개)
+  q: string // 독자 궁금증 자극 질문
+  hint: string // 힌트 (다음 카드 일부 공개)
   visual: CardVisual
 }
 

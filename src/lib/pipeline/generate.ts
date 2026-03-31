@@ -442,16 +442,14 @@ function getAnthropicClient() {
   })
 }
 
-function extractToolInput(
-  message: {
-    stop_reason: string | null
-    content: Array<{
-      type: string
-      name?: string
-      input?: unknown
-    }>
-  },
-) {
+function extractToolInput(message: {
+  stop_reason: string | null
+  content: Array<{
+    type: string
+    name?: string
+    input?: unknown
+  }>
+}) {
   if (message.stop_reason === 'max_tokens') {
     throw new Error(
       'LLM 출력이 max_tokens 한도에 도달해 잘렸습니다. 출력 토큰 한도를 늘리거나 요청을 줄이세요.',

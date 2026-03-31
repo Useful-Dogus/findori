@@ -263,8 +263,7 @@ const cardsArraySchema = z
   .min(CARD_COUNT_MIN, { message: `카드는 최소 ${CARD_COUNT_MIN}장 이상이어야 합니다` })
   .max(CARD_COUNT_MAX, { message: `카드는 최대 ${CARD_COUNT_MAX}장 이하여야 합니다` })
   .refine(
-    (cards) =>
-      cards.length > 0 && (FIRST_CARD_TYPES as readonly string[]).includes(cards[0].type),
+    (cards) => cards.length > 0 && (FIRST_CARD_TYPES as readonly string[]).includes(cards[0].type),
     {
       message: `첫 번째 카드는 반드시 ${FIRST_CARD_TYPES.join(' | ')} 타입 중 하나여야 합니다`,
     },

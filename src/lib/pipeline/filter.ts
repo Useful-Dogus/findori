@@ -95,7 +95,10 @@ export async function filterArticles(
       .filter((i): i is number => typeof i === 'number' && i >= 0 && i < articles.length)
       .slice(0, MAX_FILTERED_ARTICLES)
 
-    const selected = indices.length > 0 ? indices.map((i) => articles[i]) : articles.slice(0, MAX_FILTERED_ARTICLES)
+    const selected =
+      indices.length > 0
+        ? indices.map((i) => articles[i])
+        : articles.slice(0, MAX_FILTERED_ARTICLES)
 
     const inputTokens = response.usage.input_tokens
     const outputTokens = response.usage.output_tokens
