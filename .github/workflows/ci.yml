@@ -25,6 +25,15 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          # 빌드 시점 환경변수 검증 통과용 더미값 (실제 API 호출 없음 — 모든 라우트 SSR dynamic)
+          NEXT_PUBLIC_SUPABASE_URL: https://dummy.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: dummy-anon-key-for-ci-build-only-placeholder
+          SUPABASE_SERVICE_ROLE_KEY: dummy-service-role-key-for-ci-build-placeholder
+          ADMIN_PASSWORD: ci-dummy-password-16chars
+          ADMIN_SESSION_SECRET: ci-dummy-session-secret-for-build-only-32chars!!
+          ANTHROPIC_API_KEY: sk-ant-dummy-key-for-ci-build-only-placeholder
+          CRON_SECRET: ci-dummy-cron-secret
 
       - name: Lint
         run: npm run lint
