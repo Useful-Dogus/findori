@@ -16,7 +16,7 @@
 
 **Purpose**: 이미지 파일 디렉터리 구조 초기화
 
-- [ ] T001 `public/images/cards/` 하위 6개 서브디렉터리 생성: `theme/`, `emotion/`, `env/`, `company/`, `symbol/`, `action/`
+- [X] T001 `public/images/cards/` 하위 6개 서브디렉터리 생성: `theme/`, `emotion/`, `env/`, `company/`, `symbol/`, `action/`
 
 ---
 
@@ -26,10 +26,10 @@
 
 **⚠️ CRITICAL**: 이 Phase가 완료되어야 모든 User Story 작업 시작 가능
 
-- [ ] T002 `src/types/cards.ts`의 `CardVisual` 타입에 `imgCategory?: string` 옵셔널 필드 추가
-- [ ] T003 `src/lib/cards.ts`의 `cardVisualSchema`에 `imgCategory: z.string().optional()` 추가
-- [ ] T004 `src/lib/images/registry.ts` 신규 파일 생성 — `ImageEntry` 타입, `ImageCategory` union 타입, `IMAGE_REGISTRY` (38개 키 전체), `FALLBACK_IMAGE_KEY = 'theme/growth'`, `resolveImageUrl()`, `getImageKeysForPrompt()` 구현 (data-model.md 참고)
-- [ ] T005 `npm run build`로 타입 검사 통과 확인 (T002-T004 완료 후)
+- [X] T002 `src/types/cards.ts`의 `CardVisual` 타입에 `imgCategory?: string` 옵셔널 필드 추가
+- [X] T003 `src/lib/cards.ts`의 `cardVisualSchema`에 `imgCategory: z.string().optional()` 추가
+- [X] T004 `src/lib/images/registry.ts` 신규 파일 생성 — `ImageEntry` 타입, `ImageCategory` union 타입, `IMAGE_REGISTRY` (38개 키 전체), `FALLBACK_IMAGE_KEY = 'theme/growth'`, `resolveImageUrl()`, `getImageKeysForPrompt()` 구현 (data-model.md 참고)
+- [X] T005 `npm run build`로 타입 검사 통과 확인 (T002-T004 완료 후)
 
 **Checkpoint**: Foundation 완료 — 모든 User Story 작업 시작 가능
 
@@ -41,9 +41,9 @@
 
 **Independent Test**: 카드 타입이 다른 카드들(cover, stats, compare, verdict 등)을 연속으로 탐색하며 높이 변화 없음을 확인. 모바일/데스크탑 양쪽에서 종횡비 동일함을 확인.
 
-- [ ] T006 [US4] `src/components/features/feed/FeedCardStack.tsx` — 카드 컨테이너 클래스에 `aspect-[4/5] w-full overflow-hidden` 추가, 내부 콘텐츠를 `relative` 컨테이너 안 `absolute inset-0 flex flex-col px-4 py-5 sm:px-6 sm:py-6`으로 재배치
-- [ ] T007 [US4] `src/components/features/feed/FeedCardStack.tsx` — 텍스트 오버플로우 방지: 카드 타입별 body/cause/reveal 등 긴 텍스트 필드에 `line-clamp-3` 또는 `line-clamp-4` 적용
-- [ ] T008 [US4] `npm run build`로 타입·빌드 게이트 통과 확인
+- [X] T006 [US4] `src/components/features/feed/FeedCardStack.tsx` — 카드 컨테이너 클래스에 `aspect-[4/5] w-full overflow-hidden` 추가, 내부 콘텐츠를 `relative` 컨테이너 안 `absolute inset-0 flex flex-col px-4 py-5 sm:px-6 sm:py-6`으로 재배치
+- [X] T007 [US4] `src/components/features/feed/FeedCardStack.tsx` — 텍스트 오버플로우 방지: 카드 타입별 body/cause/reveal 등 긴 텍스트 필드에 `line-clamp-3` 또는 `line-clamp-4` 적용
+- [X] T008 [US4] `npm run build`로 타입·빌드 게이트 통과 확인
 
 **Checkpoint**: 이 시점에서 US4 독립 검증 가능 — 이미지 없이도 4:5 고정 크기 동작 확인
 
@@ -62,9 +62,9 @@
 
 ### 렌더러 구현
 
-- [ ] T011 [US1] `src/components/features/feed/FeedCardStack.tsx` — `cardStyle()` 함수 시그니처 확장: `imageUrl: string | null` 인자 추가. 이미지 있을 때 `backgroundImage: \`${gradient}, url(${imageUrl})\`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundBlendMode: 'multiply'` 적용 (data-model.md 참고)
-- [ ] T012 [US1] `src/components/features/feed/FeedCardStack.tsx` — 카드 렌더링 시 `resolveImageUrl(card.visual.imgCategory)` 호출하여 `cardStyle()`에 전달. `imgCategory` undefined인 기존 카드는 null 반환으로 gradient만 표시
-- [ ] T013 [US1] `npm run build`로 타입·빌드 게이트 통과 확인 (T009-T012 완료 후)
+- [X] T011 [US1] `src/components/features/feed/FeedCardStack.tsx` — `cardStyle()` 함수 시그니처 확장: `imageUrl: string | null` 인자 추가. 이미지 있을 때 `backgroundImage: \`${gradient}, url(${imageUrl})\`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundBlendMode: 'multiply'` 적용 (data-model.md 참고)
+- [X] T012 [US1] `src/components/features/feed/FeedCardStack.tsx` — 카드 렌더링 시 `resolveImageUrl(card.visual.imgCategory)` 호출하여 `cardStyle()`에 전달. `imgCategory` undefined인 기존 카드는 null 반환으로 gradient만 표시
+- [X] T013 [US1] `npm run build`로 타입·빌드 게이트 통과 확인 (T009-T012 완료 후)
 
 **Checkpoint**: 이 시점에서 US1 독립 검증 가능 — 테마/상징/행동 이미지가 카드에 표시되며, imgCategory 없는 카드는 기존 gradient로 표시됨
 
@@ -90,9 +90,9 @@
 
 **Independent Test**: 다양한 뉴스 유형으로 파이프라인 실행 시 생성된 카드의 `imgCategory` 필드가 라이브러리 내 유효한 키이며, 내용과 관련성 높은 키가 선택됨.
 
-- [ ] T017 [US5] `src/lib/pipeline/generate.ts` — `generate_cards` tool schema의 `visual` 객체에 `imgCategory: z.string().optional()` 필드 추가
-- [ ] T018 [US5] `src/lib/pipeline/generate.ts` — 시스템 프롬프트의 Visual Palette Guide 섹션 뒤에 "이미지 카테고리 키" 섹션 추가: `getImageKeysForPrompt()` 반환값 삽입. 이슈 주체(기업명)가 `company/` 키에 있으면 해당 키 우선 선택, 없으면 `theme/` 또는 `emotion/` 중 선택하도록 지침 명시
-- [ ] T019 [US5] `npm run build`로 타입·빌드 게이트 통과 확인
+- [X] T017 [US5] `src/lib/pipeline/generate.ts` — `generate_cards` tool schema의 `visual` 객체에 `imgCategory: z.string().optional()` 필드 추가
+- [X] T018 [US5] `src/lib/pipeline/generate.ts` — 시스템 프롬프트의 Visual Palette Guide 섹션 뒤에 "이미지 카테고리 키" 섹션 추가: `getImageKeysForPrompt()` 반환값 삽입. 이슈 주체(기업명)가 `company/` 키에 있으면 해당 키 우선 선택, 없으면 `theme/` 또는 `emotion/` 중 선택하도록 지침 명시
+- [X] T019 [US5] `npm run build`로 타입·빌드 게이트 통과 확인
 
 **Checkpoint**: 이 시점에서 US5 독립 검증 가능 — 파이프라인 실행 후 카드에 imgCategory 필드 생성됨
 
