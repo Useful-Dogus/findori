@@ -33,12 +33,13 @@ const hexColorSchema = z.string().regex(/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/, {
   message: '유효한 hex 색상값이어야 합니다 (#RGB 또는 #RRGGBB 형식, 예: #0f172a)',
 })
 
-// T003: CardVisual 스키마 (4개 hex 필드)
+// T003: CardVisual 스키마 (4개 hex 필드 + 선택적 이미지 카테고리 키)
 const cardVisualSchema = z.object({
   bg_from: hexColorSchema,
   bg_via: hexColorSchema,
   bg_to: hexColorSchema,
   accent: hexColorSchema,
+  imgCategory: z.string().optional(),
 })
 
 // T004: 서브 엔티티 스키마

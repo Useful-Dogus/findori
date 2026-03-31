@@ -1,10 +1,12 @@
 # findori Development Guidelines
 
-Auto-generated from all feature plans. Last updated: 2026-03-26
+Auto-generated from all feature plans. Last updated: 2026-03-31
 
 ## Active Technologies
 - TypeScript 5 (strict mode) + Next.js 15 App Router, Anthropic SDK (`@anthropic-ai/sdk`), Zod, Supabase JS (092-card-type-redesign)
 - Supabase PostgreSQL — `cards_data` 컬럼은 `jsonb` 타입이므로 DB 마이그레이션 불필요 (092-card-type-redesign)
+- TypeScript 5 (strict mode), Next.js 15 App Router + Anthropic SDK (`@anthropic-ai/sdk`), Zod, Tailwind CSS v4 (093-image-category-system)
+- `/public/images/cards/` (WebP 정적 파일), DB는 `cards_data` jsonb 컬럼 그대로 사용 (마이그레이션 불필요) (093-image-category-system)
 
 - TypeScript 5 / Next.js 15 (App Router) + Anthropic SDK (`@anthropic-ai/sdk`), Supabase JS, Zod (054-pipeline-cost-opt)
 
@@ -48,6 +50,7 @@ npm run lint     # 린트
 TypeScript 5 / Next.js 15 (App Router): Follow standard conventions
 
 ## Recent Changes
+- 093-image-category-system: Added TypeScript 5 (strict mode), Next.js 15 App Router + Anthropic SDK (`@anthropic-ai/sdk`), Zod, Tailwind CSS v4
 - 092-card-type-redesign: Added TypeScript 5 (strict mode) + Next.js 15 App Router, Anthropic SDK (`@anthropic-ai/sdk`), Zod, Supabase JS
 
 - 054-pipeline-cost-opt: Added TypeScript 5 / Next.js 15 (App Router) + Anthropic SDK (`@anthropic-ai/sdk`), Supabase JS, Zod

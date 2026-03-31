@@ -4,8 +4,9 @@ import { useRef, useState } from 'react'
 import type { CSSProperties, TouchEvent } from 'react'
 
 import { trackFeedEvent } from '@/lib/analytics'
+import { resolveImageUrl } from '@/lib/images/registry'
 import FeedSourceLink from '@/components/features/feed/FeedSourceLink'
-import type { Card, CardSource } from '@/types/cards'
+import type { Card, CardSource, CardVisual } from '@/types/cards'
 
 type FeedCardStackProps = {
   cards: Card[] | null
@@ -13,11 +14,24 @@ type FeedCardStackProps = {
   entityId?: string
 }
 
-function cardStyle(card: Card): CSSProperties {
-  return {
-    backgroundImage: `linear-gradient(160deg, ${card.visual.bg_from} 0%, ${card.visual.bg_via} 55%, ${card.visual.bg_to} 100%)`,
-    borderColor: `${card.visual.accent}55`,
+function cardStyle(visual: CardVisual, imageUrl: string | null): CSSProperties {
+  const gradient = `linear-gradient(160deg, ${visual.bg_from}cc, ${visual.bg_via}99, ${visual.bg_to})`
+  const base: CSSProperties = {
+    borderColor: `${visual.accent}55`,
     boxShadow: `inset 0 1px 0 rgba(255,255,255,0.08), 0 18px 40px rgba(15, 23, 42, 0.25)`,
+  }
+  if (imageUrl) {
+    return {
+      ...base,
+      backgroundImage: `${gradient}, url(${imageUrl})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundBlendMode: 'multiply',
+    }
+  }
+  return {
+    ...base,
+    backgroundImage: gradient,
   }
 }
 
@@ -64,7 +78,7 @@ function CardBody({
       return (
         <>
           <h3 className="text-2xl leading-tight font-bold whitespace-pre-line">{card.title}</h3>
-          <p className="text-foreground/80 text-sm whitespace-pre-line">{card.sub}</p>
+          <p className="text-foreground/80 line-clamp-3 text-sm whitespace-pre-line">{card.sub}</p>
         </>
       )
     case 'reason':
@@ -73,7 +87,7 @@ function CardBody({
       return (
         <>
           <h3 className="text-xl leading-tight font-semibold whitespace-pre-line">{card.title}</h3>
-          <p className="text-foreground/85 text-sm leading-6 whitespace-pre-line">{card.body}</p>
+          <p className="text-foreground/85 line-clamp-4 text-sm leading-6 whitespace-pre-line">{card.body}</p>
           {card.stat ? (
             <p className="inline-flex rounded-full bg-white/10 px-3 py-1 text-xs font-semibold">
               {card.stat}
@@ -92,7 +106,7 @@ function CardBody({
                 key={`${quote.text}-${index}`}
                 className="rounded-2xl bg-white/8 px-4 py-3 text-sm leading-6"
               >
-                <p>{quote.text}</p>
+                <p className="line-clamp-3">{quote.text}</p>
                 <footer className="text-foreground/65 mt-2 text-xs">{quote.mood}</footer>
               </blockquote>
             ))}
@@ -149,7 +163,7 @@ function CardBody({
               <p className="text-3xl font-black text-white">{card.after}</p>
             </div>
           </div>
-          <p className="text-foreground/75 text-sm leading-6 whitespace-pre-line">{card.context}</p>
+          <p className="text-foreground/75 line-clamp-3 text-sm leading-6 whitespace-pre-line">{card.context}</p>
         </>
       )
     case 'delta-intro':
@@ -174,9 +188,9 @@ function CardBody({
             <p className="mb-1 text-xs font-bold" style={{ color: accent }}>
               {card.what}이 뭔가요?
             </p>
-            <p className="text-foreground/80 text-sm leading-6">{card.whatDesc}</p>
+            <p className="text-foreground/80 line-clamp-3 text-sm leading-6">{card.whatDesc}</p>
           </div>
-          <p className="text-foreground/70 text-sm leading-6">{card.trigger}</p>
+          <p className="text-foreground/70 line-clamp-2 text-sm leading-6">{card.trigger}</p>
         </>
       )
     case 'cause':
@@ -188,7 +202,7 @@ function CardBody({
           >
             {card.result}
           </div>
-          <p className="text-foreground/82 text-sm leading-6 whitespace-pre-line">{card.cause}</p>
+          <p className="text-foreground/82 line-clamp-4 text-sm leading-6 whitespace-pre-line">{card.cause}</p>
           <SourceList sources={card.sources} onSourceClick={onSourceClick} />
         </>
       )
@@ -200,7 +214,7 @@ function CardBody({
           </p>
           <p className="text-lg font-bold text-white">{card.label}</p>
           <div className="h-0.5 w-8 rounded" style={{ backgroundColor: accent }} />
-          <p className="text-foreground/78 text-sm leading-6 whitespace-pre-line">{card.reveal}</p>
+          <p className="text-foreground/78 line-clamp-3 text-sm leading-6 whitespace-pre-line">{card.reveal}</p>
           <SourceList sources={card.sources} onSourceClick={onSourceClick} />
         </>
       )
@@ -239,7 +253,7 @@ function CardBody({
               </div>
             ))}
           </div>
-          <p className="text-foreground/70 border-t border-white/10 pt-3 text-xs leading-6 whitespace-pre-line">
+          <p className="text-foreground/70 line-clamp-3 border-t border-white/10 pt-3 text-xs leading-6 whitespace-pre-line">
             {card.footer}
           </p>
         </>
@@ -289,7 +303,7 @@ function CardBody({
                 <span className="mt-0.5 shrink-0 font-black" style={{ color: accent }}>
                   ·
                 </span>
-                <span className="text-foreground/75 text-sm leading-6">{reason}</span>
+                <span className="text-foreground/75 line-clamp-2 text-sm leading-6">{reason}</span>
               </div>
             ))}
           </div>
@@ -302,7 +316,7 @@ function CardBody({
             {card.q}
           </h3>
           <div className="h-px bg-white/10" />
-          <p className="text-foreground/70 text-sm leading-6 whitespace-pre-line">{card.hint}</p>
+          <p className="text-foreground/70 line-clamp-3 text-sm leading-6 whitespace-pre-line">{card.hint}</p>
         </>
       )
   }
@@ -412,20 +426,22 @@ export default function FeedCardStack({ cards, entityType, entityId }: FeedCardS
       >
         <article
           key={activeCard.id}
-          className="overflow-hidden rounded-[28px] border px-4 py-5 text-white sm:px-6 sm:py-6"
-          style={cardStyle(activeCard)}
+          className="relative aspect-[4/5] w-full overflow-hidden rounded-[28px] border text-white"
+          style={cardStyle(activeCard.visual, resolveImageUrl(activeCard.visual.imgCategory))}
         >
-          <div className="space-y-5">
-            <div className="flex items-center justify-between gap-3">
-              <p className="rounded-full bg-white/12 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] uppercase">
-                {sectionLabel(activeCard, activeIndex, totalCards)}
-              </p>
-              <p className="text-[11px] font-medium tracking-[0.14em] text-white/70 uppercase">
-                {activeCard.type}
-              </p>
-            </div>
-            <div className="space-y-4">
-              <CardBody card={activeCard} onSourceClick={handleSourceClick} />
+          <div className="absolute inset-0 flex flex-col px-4 py-5 sm:px-6 sm:py-6">
+            <div className="flex min-h-0 flex-1 flex-col space-y-5">
+              <div className="flex items-center justify-between gap-3">
+                <p className="rounded-full bg-white/12 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] uppercase">
+                  {sectionLabel(activeCard, activeIndex, totalCards)}
+                </p>
+                <p className="text-[11px] font-medium tracking-[0.14em] text-white/70 uppercase">
+                  {activeCard.type}
+                </p>
+              </div>
+              <div className="min-h-0 flex-1 overflow-y-auto space-y-4">
+                <CardBody card={activeCard} onSourceClick={handleSourceClick} />
+              </div>
             </div>
           </div>
         </article>

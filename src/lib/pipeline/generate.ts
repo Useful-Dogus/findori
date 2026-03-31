@@ -2,6 +2,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import { z } from 'zod'
 
 import { parseCards } from '@/lib/cards'
+import { getImageKeysForPrompt } from '@/lib/images/registry'
 import type { ExtractedFacts } from '@/lib/pipeline/extract'
 import type {
   CollectedArticle,
@@ -132,6 +133,7 @@ function buildToolSchema() {
                         bg_via: { type: 'string' },
                         bg_to: { type: 'string' },
                         accent: { type: 'string' },
+                        imgCategory: { type: 'string' },
                       },
                       required: ['bg_from', 'bg_via', 'bg_to', 'accent'],
                       additionalProperties: false,
@@ -337,7 +339,22 @@ function buildSystemPrompt(): string {
 - 이슈는 최대 ${MAX_ISSUES}개. 가장 흥미롭고 중요한 이슈를 우선 선택하라.
 - 투자 권유·유도 표현 절대 금지 (예: "지금 사야 한다", "매수 추천")
 - **community 카드 생성 절대 금지**
-- 모든 텍스트는 한국어로 작성`
+- 모든 텍스트는 한국어로 작성
+
+## 이미지 카테고리 키
+
+각 카드의 visual 객체에 imgCategory 필드를 선택적으로 포함하라.
+카드 내용과 가장 관련성 높은 키를 아래 목록에서 선택하라.
+
+선택 우선순위:
+1. 이슈 주체(기업명 등)가 company/ 키에 있으면 해당 키 우선 선택
+2. 없으면 theme/ 또는 emotion/ 중 카드 분위기에 맞는 키 선택
+3. 환경·증권거래소 이미지가 맥락에 맞으면 env/ 키 선택
+4. 수치·금융 상징 이미지는 symbol/ 선택
+5. 투자자 행동 장면이 필요하면 action/ 선택
+
+사용 가능한 키 목록:
+${getImageKeysForPrompt()}`
 }
 
 // T004: buildPrompt 단순화 — 역할/규칙 지시문 제거, 기사 목록만 포함

@@ -8,6 +8,8 @@ export type CardVisual = {
   bg_via: string
   bg_to: string
   accent: string
+  /** 이미지 라이브러리 키 (예: "theme/stock-up", "company/samsung"). 없으면 gradient만 표시 */
+  imgCategory?: string
 }
 
 export type CardSource = {
