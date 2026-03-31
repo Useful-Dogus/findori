@@ -148,7 +148,10 @@ describe('FeedView', () => {
     render(<FeedView date="2026-03-20" issues={[sampleIssue]} previousDate="2026-03-19" />)
 
     expect(screen.getByText('오늘의 이슈 카드 스트림')).toBeInTheDocument()
-    expect(screen.getByText('1/3')).toBeInTheDocument()
+    expect(screen.getAllByText('1/3').length).toBeGreaterThan(0)
+    expect(
+      screen.queryByText('사건, 해석, 시장 반응 흐름으로 정리한 카드 브리핑'),
+    ).not.toBeInTheDocument()
     expect(screen.getByRole('link', { name: '이전 발행일' })).toHaveAttribute(
       'href',
       '/feed/2026-03-19',
@@ -167,16 +170,26 @@ describe('FeedView', () => {
     expect(screen.getByText('출처 전체 보기')).toBeInTheDocument()
   })
 
-  it('대표 지수·환율 맥락 섹션을 렌더링하고 누락 슬롯은 업데이트 지연으로 표시한다', () => {
+  it('대표 지수·환율 맥락 섹션은 데이터가 있는 슬롯만 렌더링한다', () => {
     render(<FeedView date="2026-03-20" issues={[contextIssue, sampleIssue]} />)
 
-    expect(screen.getByText('대표 지수·환율 맥락 카드')).toBeInTheDocument()
-    expect(screen.getByText('코스피')).toBeInTheDocument()
-    expect(screen.getByText('USD/KRW')).toBeInTheDocument()
-    expect(screen.getAllByText('업데이트 지연').length).toBeGreaterThan(0)
+    expect(screen.getByText('대표 지수·환율')).toBeInTheDocument()
+    expect(screen.getAllByText('코스피').length).toBeGreaterThan(0)
+    expect(screen.queryByText('USD/KRW')).not.toBeInTheDocument()
+    expect(screen.queryByText('업데이트 지연')).not.toBeInTheDocument()
 
     const jumpLink = screen.getByRole('link', { name: '이슈 카드 보기' })
     expect(jumpLink).toHaveAttribute('href', '#issue-context-kospi')
+  })
+
+  it('이슈 카드 블록에서 저가치 메타 정보를 최소화한다', () => {
+    render(<FeedView date="2026-03-20" issues={[sampleIssue]} />)
+
+    expect(screen.getByText('삼성전자')).toBeInTheDocument()
+    expect(screen.getByText('삼성전자 급등')).toBeInTheDocument()
+    expect(screen.queryByText('카드 3장')).not.toBeInTheDocument()
+    expect(screen.getByText('반도체')).toBeInTheDocument()
+    expect(screen.queryByText('실적')).not.toBeInTheDocument()
   })
 
   it('cardsData가 없으면 fallback 안내를 렌더링한다', () => {

@@ -58,12 +58,15 @@ describe('FeedCardStack', () => {
     render(<FeedCardStack cards={cards} />)
 
     expect(screen.getByText('삼성전자 급등')).toBeInTheDocument()
+    expect(
+      screen.queryByText('좌우로 넘기거나 버튼으로 카드를 이동하세요.'),
+    ).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: '이전 카드' })).toBeDisabled()
 
     fireEvent.click(screen.getByRole('button', { name: '다음 카드' }))
 
     expect(screen.getByText('AI 밸류체인 기대')).toBeInTheDocument()
-    expect(screen.getAllByText('2/3 · 원인').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('2/3').length).toBeGreaterThan(0)
 
     fireEvent.click(screen.getByRole('button', { name: '이전 카드' }))
 

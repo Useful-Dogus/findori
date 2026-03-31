@@ -42,7 +42,10 @@ export function SourcesManager({ initialSources }: Props) {
       setSources((prev) => [...prev, body.source as AdminMediaSource])
       setName('')
       setRssUrl('')
-      setMessage({ kind: 'ok', text: `"${(body.source as AdminMediaSource).name}" 매체가 등록되었습니다.` })
+      setMessage({
+        kind: 'ok',
+        text: `"${(body.source as AdminMediaSource).name}" 매체가 등록되었습니다.`,
+      })
     } catch {
       setMessage({ kind: 'error', text: '네트워크 오류가 발생했습니다.' })
     } finally {
