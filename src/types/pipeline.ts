@@ -9,6 +9,16 @@ export type PipelineError = {
   message: string
 }
 
+export type GuardrailViolation = {
+  entityId: string
+  cardId: number
+  cardType: string
+  field: string
+  actual: number
+  limit: number
+  violationType: 'max_chars' | 'max_sentences'
+}
+
 export type PipelineSourceStat = {
   source: string
   count: number
@@ -66,6 +76,7 @@ export type PipelineExecutionSummary = {
   source_stats: PipelineSourceStat[]
   issues_created: number
   errors: PipelineError[]
+  guardrail_violations: GuardrailViolation[]
   duration_ms: number
 }
 
