@@ -10,6 +10,9 @@ import {
   isValidDate,
 } from '@/lib/public/feeds'
 
+// 이슈 상세 페이지도 10분 ISR (SNS 공유 링크의 메타데이터 포함)
+export const revalidate = 600
+
 type Params = Promise<{ date: string; id: string }>
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
