@@ -79,7 +79,7 @@ export function PublishFeedButton({ date, feedStatus }: PublishFeedButtonProps) 
         type="button"
         onClick={handlePublish}
         disabled={isLoading}
-        className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
+        className="cursor-pointer rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {isLoading ? '발행 중...' : '피드 발행'}
       </button>

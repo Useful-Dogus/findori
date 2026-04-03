@@ -527,7 +527,7 @@ export default function FeedCardStack({ cards, entityType, entityId }: FeedCardS
           type="button"
           onClick={() => moveCard('prev')}
           disabled={activeIndex === 0}
-          className="min-h-11 rounded-full border border-white/12 px-4 py-2 text-sm font-medium text-white/80 transition focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
+          className="min-h-11 cursor-pointer rounded-full border border-white/12 px-4 py-2 text-sm font-medium text-white/80 transition focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
         >
           이전 카드
         </button>
@@ -538,7 +538,7 @@ export default function FeedCardStack({ cards, entityType, entityId }: FeedCardS
           type="button"
           onClick={() => moveCard('next')}
           disabled={activeIndex === totalCards - 1}
-          className="min-h-11 rounded-full border border-white/12 px-4 py-2 text-sm font-medium text-white/80 transition focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
+          className="min-h-11 cursor-pointer rounded-full border border-white/12 px-4 py-2 text-sm font-medium text-white/80 transition focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-40"
         >
           다음 카드
         </button>

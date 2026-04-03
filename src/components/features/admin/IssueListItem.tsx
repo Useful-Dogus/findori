@@ -219,7 +219,7 @@ export function IssueListItem({ issue }: IssueListItemProps) {
         <button
           type="button"
           onClick={() => setOpen((value) => !value)}
-          className="min-w-0 flex-1 text-left"
+          className="min-w-0 flex-1 cursor-pointer text-left"
         >
           <div className="space-y-2">
             <div className="flex items-center gap-3">
@@ -268,7 +268,7 @@ export function IssueListItem({ issue }: IssueListItemProps) {
                     type="button"
                     onClick={handleOrderSave}
                     disabled={isSavingCard}
-                    className="rounded-lg bg-sky-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-sky-500 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="cursor-pointer rounded-lg bg-sky-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-sky-500 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     순서 저장
                   </button>
@@ -315,7 +315,7 @@ export function IssueListItem({ issue }: IssueListItemProps) {
                             type="button"
                             onClick={() => moveCard(index, -1)}
                             disabled={!canMoveUp || isSavingCard}
-                            className="rounded-lg border border-slate-700 px-2 py-1 text-sm text-slate-300 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="cursor-pointer rounded-lg border border-slate-700 px-2 py-1 text-sm text-slate-300 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
                             aria-label={`${card.type} 카드를 위로 이동`}
                           >
                             ↑
@@ -324,7 +324,7 @@ export function IssueListItem({ issue }: IssueListItemProps) {
                             type="button"
                             onClick={() => moveCard(index, 1)}
                             disabled={!canMoveDown || isSavingCard}
-                            className="rounded-lg border border-slate-700 px-2 py-1 text-sm text-slate-300 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="cursor-pointer rounded-lg border border-slate-700 px-2 py-1 text-sm text-slate-300 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
                             aria-label={`${card.type} 카드를 아래로 이동`}
                           >
                             ↓
@@ -333,7 +333,7 @@ export function IssueListItem({ issue }: IssueListItemProps) {
                             type="button"
                             onClick={() => startEditing(card)}
                             disabled={isSavingCard}
-                            className="rounded-lg border border-slate-700 px-3 py-1.5 text-sm text-slate-200 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="cursor-pointer rounded-lg border border-slate-700 px-3 py-1.5 text-sm text-slate-200 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
                           >
                             편집
                           </button>

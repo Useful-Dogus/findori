@@ -8,7 +8,7 @@ type IssueStatusActionsProps = {
 
 function getButtonClassName(active: boolean, palette: 'slate' | 'emerald' | 'rose') {
   const base =
-    'rounded-lg px-3 py-1.5 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-50'
+    'cursor-pointer rounded-lg px-3 py-1.5 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-50'
 
   if (palette === 'emerald') {
     return `${base} ${active ? 'bg-emerald-500 text-white' : 'bg-emerald-600 text-white hover:bg-emerald-500'}`
