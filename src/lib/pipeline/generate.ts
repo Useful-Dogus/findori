@@ -3,11 +3,13 @@ import { z } from 'zod'
 
 import { parseCards } from '@/lib/cards'
 import { getImageKeysForPrompt } from '@/lib/images/registry'
+import { validateCardGuardrails } from '@/lib/pipeline/guardrails'
 import type { ExtractedFacts } from '@/lib/pipeline/extract'
 import type {
   CollectedArticle,
   ContextMarketData,
   GeneratedIssueDraft,
+  GuardrailViolation,
   PipelineError,
   TokenUsage,
 } from '@/types/pipeline'
@@ -238,8 +240,18 @@ function buildSystemPrompt(): string {
 **말투 금지 패턴**:
   ❌ "~가 아니다. 대신 ~다." (LLM 생성 티가 나는 패턴)
   ❌ "즉," "결국," 접속사 남발 (3회 이상 연속 금지)
-  ❌ 어미 혼용 ("~했어요"와 "~했다" 섞기, 하나로 통일)
   ❌ 전문용어 첫 등장 시 설명 없음 (반드시 괄호 설명)
+
+**어미 스타일 — 아키타입별 통일**:
+  아래 스토리 아키타입 테이블의 "어미 스타일" 컬럼을 따르라.
+  동일 이슈 내 모든 카드에서 어미를 혼용하지 말 것.
+  ❌ "외국인이 1.8조원을 팔았어요. 이 여파로 원화가 떨어졌다." (경어체·문어체 혼용)
+
+**고유명사 처리 원칙**:
+  - 독자에게 생소한 주체(기업명, 외국 지수 등)가 첫 등장할 때: 괄호 안에 간략한 설명 병기 또는 delta-intro 카드 활용
+  - 동일 이슈 내 2번째 이후 등장: 전체 이름 대신 약칭 또는 대명사 사용
+  - 영문 약어(ETF, FOMC, PER 등) 첫 등장 시: 한국어 풀네임 또는 설명 병기 필수
+    예) "FOMC(미국 연방공개시장위원회)", "PER(주가수익비율)"
 
 **비교로 신뢰 구축**:
   ❌ "원화만 유독 약세"
@@ -249,13 +261,13 @@ function buildSystemPrompt(): string {
 
 이슈 유형을 아래 아키타입 중 하나로 분류하고, 해당 권장 시퀀스를 따르라.
 
-| 아키타입 | 트리거 | 권장 카드 시퀀스 |
-|---------|--------|----------------|
-| BREAKING | 당일 ±3% 이상 급변동 | delta → cause → stat → verdict → source |
-| EARNINGS | 실적 발표 뉴스 | delta → cause → stat → compare → verdict → source |
-| MACRO | 금리·환율·지수 거시 이슈 | delta → cause → compare → impact → verdict → source |
-| THEME | 섹터·테마·신기술 트렌드 | delta-intro → cause → stat → verdict → source |
-| EDUCATION | 구조·심리 분석, 독자 생소 주제 | question → cause → stat → compare → verdict → source |
+| 아키타입 | 트리거 | 권장 카드 시퀀스 | 어미 스타일 |
+|---------|--------|----------------|-----------|
+| BREAKING | 당일 ±3% 이상 급변동 | delta → cause → stat → verdict → source | 문어체 (~했다, ~이다) |
+| EARNINGS | 실적 발표 뉴스 | delta → cause → stat → compare → verdict → source | 문어체 (~했다, ~이다) |
+| MACRO | 금리·환율·지수 거시 이슈 | delta → cause → compare → impact → verdict → source | 문어체 (~했다, ~이다) |
+| THEME | 섹터·테마·신기술 트렌드 | delta-intro → cause → stat → verdict → source | 문어체 (~했다, ~이다) |
+| EDUCATION | 구조·심리 분석, 독자 생소 주제 | question → cause → stat → compare → verdict → source | 경어체 (~했어요, ~입니다) |
 
 규칙:
 - 비교 데이터가 없으면 compare 카드 생략 가능
@@ -274,21 +286,27 @@ function buildSystemPrompt(): string {
 
 ### delta-intro (낯선 주체 소개 + 변화량)
 - 필수 필드: id, type, tag, before, after, period, what, whatDesc, trigger, visual
-- what: 주체 이름 / whatDesc: 2문장 이내 설명 / trigger: 지금 주목받는 이유 1문장
+- what: 주체 이름
+- whatDesc: 주체 소개 (2문장 이내 / 100자 이내). is_subject_unfamiliar: true이면 반드시 포함
+- trigger: 지금 주목받는 이유 (1문장 / 60자 이내)
 
 ### cause (결과 → 원인)
 - 필수 필드: id, type, tag, result, cause, sources, visual
-- result: 결과 한 줄 (30자 이내) / cause: 원인 설명 (3줄/120자 이내)
+- result: 결과 한 줄 (30자 이내)
+- cause: 원인 설명 (120자 이내)
 - sources: 최소 1개 필수
 
 ### stat (단일 통계 강조)
 - 필수 필드: id, type, tag, number, label, reveal, sources, visual
-- number: 수치 / label: 레이블 / reveal: 상식을 뒤집는 해석 2줄
+- number: 수치 / label: 레이블
+- reveal: 상식을 뒤집는 해석 (80자 이내)
 - sources: 최소 1개 필수
 
 ### compare (비교 테이블)
 - 필수 필드: id, type, tag, q, rows, footer, visual
+- q: 비교 질문 (40자 이내)
 - rows: 최소 2개. 각 행: label, change, dir('up'|'down'|'worst'), note
+- footer: 비교 요약 한 줄 (60자 이내)
 - 'worst'는 이슈의 주인공(가장 나쁜 결과)에 사용
 
 ### impact (독자 실생활 영향)
@@ -298,11 +316,14 @@ function buildSystemPrompt(): string {
 
 ### verdict (한 문장 결론)
 - 필수 필드: id, type, tag, verdict, reasons, visual
-- verdict: 결론 한 문장 (50자 이내) / reasons: 근거 2-3개
+- verdict: 결론 한 문장 (50자 이내 / 1문장)
+- reasons: 근거 2-3개
 - **반드시 source 카드 바로 앞에 위치**
 
 ### question (다음 카드 연결 훅)
 - 필수 필드: id, type, tag, q, hint, visual
+- q: 핵심 질문 (50자 이내)
+- hint: 힌트 한 줄 (60자 이내)
 - EDUCATION 아키타입의 첫 번째 카드
 
 ### source (출처 목록 — 마지막 카드 필수)
@@ -490,10 +511,11 @@ export async function generateIssues(
 ): Promise<{
   issues: GeneratedIssueDraft[]
   errors: PipelineError[]
+  violations: GuardrailViolation[]
   usage: TokenUsage | null
 }> {
   if (articles.length === 0) {
-    return { issues: [], errors: [], usage: null }
+    return { issues: [], errors: [], violations: [], usage: null }
   }
 
   const anthropic = deps.anthropic ?? getAnthropicClient()
@@ -528,6 +550,7 @@ export async function generateIssues(
   const parsed = generatedIssuesResponseSchema.parse(extractToolInput(response))
   const issues: GeneratedIssueDraft[] = []
   const errors: PipelineError[] = []
+  const violations: GuardrailViolation[] = []
 
   for (const issue of parsed.issues) {
     const cardsResult = parseCards(issue.cards)
@@ -538,6 +561,15 @@ export async function generateIssues(
         message: cardsResult.success ? 'cards_data_missing' : cardsResult.errors.join(', '),
       })
       continue
+    }
+
+    const issueViolations = validateCardGuardrails(issue.entity_id, cardsResult.data)
+    if (issueViolations.length > 0) {
+      console.warn(
+        `[guardrails] ${issue.entity_id}: ${issueViolations.length}건 위반 감지`,
+        issueViolations,
+      )
+      violations.push(...issueViolations)
     }
 
     issues.push({
@@ -551,7 +583,7 @@ export async function generateIssues(
     })
   }
 
-  return { issues, errors, usage }
+  return { issues, errors, violations, usage }
 }
 
 // T009: generateContextIssues — generateIssues와 동일한 tool_use 패턴, 다른 user prompt
@@ -563,10 +595,11 @@ export async function generateContextIssues(
 ): Promise<{
   issues: GeneratedIssueDraft[]
   errors: PipelineError[]
+  violations: GuardrailViolation[]
   usage: TokenUsage | null
 }> {
   if (contextData.length === 0) {
-    return { issues: [], errors: [], usage: null }
+    return { issues: [], errors: [], violations: [], usage: null }
   }
 
   const anthropic = deps.anthropic ?? getAnthropicClient()
@@ -601,6 +634,7 @@ export async function generateContextIssues(
   const parsed = generatedIssuesResponseSchema.parse(extractToolInput(response))
   const issues: GeneratedIssueDraft[] = []
   const errors: PipelineError[] = []
+  const violations: GuardrailViolation[] = []
 
   for (const issue of parsed.issues) {
     const cardsResult = parseCards(issue.cards)
@@ -611,6 +645,15 @@ export async function generateContextIssues(
         message: cardsResult.success ? 'cards_data_missing' : cardsResult.errors.join(', '),
       })
       continue
+    }
+
+    const issueViolations = validateCardGuardrails(issue.entity_id, cardsResult.data)
+    if (issueViolations.length > 0) {
+      console.warn(
+        `[guardrails] ${issue.entity_id}: ${issueViolations.length}건 위반 감지`,
+        issueViolations,
+      )
+      violations.push(...issueViolations)
     }
 
     issues.push({
@@ -624,5 +667,5 @@ export async function generateContextIssues(
     })
   }
 
-  return { issues, errors, usage }
+  return { issues, errors, violations, usage }
 }

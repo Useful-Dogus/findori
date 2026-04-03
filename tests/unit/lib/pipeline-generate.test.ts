@@ -166,7 +166,7 @@ describe('generateIssues', () => {
 
     const result = await generateIssues([], { anthropic })
 
-    expect(result).toEqual({ issues: [], errors: [], usage: null })
+    expect(result).toEqual({ issues: [], errors: [], violations: [], usage: null })
     expect(anthropic.messages.create).not.toHaveBeenCalled()
   })
 
@@ -284,7 +284,7 @@ describe('generateContextIssues', () => {
 
     const result = await generateContextIssues([], { anthropic })
 
-    expect(result).toEqual({ issues: [], errors: [], usage: null })
+    expect(result).toEqual({ issues: [], errors: [], violations: [], usage: null })
     expect(anthropic.messages.create).not.toHaveBeenCalled()
   })
 

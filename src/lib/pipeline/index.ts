@@ -11,6 +11,7 @@ import {
 } from '@/lib/pipeline/log'
 import { ensureDraftFeed, insertDraftIssues } from '@/lib/pipeline/store'
 import type {
+  GuardrailViolation,
   PipelineError,
   PipelineRunResult,
   PipelineStatus,
@@ -41,6 +42,7 @@ function resolvePipelineStatus(params: {
   articlesCollected: number
   issuesCreated: number
   errors: PipelineError[]
+  violations: GuardrailViolation[]
 }): Exclude<PipelineStatus, 'running'> {
   if (params.errors.length === 0) {
     return 'success'
@@ -82,6 +84,7 @@ export async function runPipeline(
 
   let collected: Awaited<ReturnType<typeof collectArticles>> | undefined
   let tokenUsage: TokenUsage | undefined
+  let allViolations: GuardrailViolation[] = []
 
   try {
     collected = await collectArticles(client, date)
@@ -116,6 +119,7 @@ export async function runPipeline(
     }
 
     const errors = [...collected.errors, ...generated.errors]
+    allViolations = generated.violations
 
     const feed = await ensureDraftFeed(client, date)
     const insertedIssues = await insertDraftIssues(client, feed.id, generated.issues)
@@ -124,6 +128,7 @@ export async function runPipeline(
       articlesCollected: filtered.articles.length,
       issuesCreated: insertedIssues.length,
       errors,
+      violations: allViolations,
     })
 
     const completedAt = new Date()
@@ -150,6 +155,7 @@ export async function runPipeline(
         source_stats: collected.sourceStats,
         issues_created: insertedIssues.length,
         errors,
+        guardrail_violations: allViolations,
         duration_ms: completedAt.getTime() - startedAt.getTime(),
       },
     }
