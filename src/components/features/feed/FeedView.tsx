@@ -151,7 +151,7 @@ export default function FeedView({ date, issues, initialIssueId, previousDate }:
           </div>
         </div>
       </header>
-      <main className="flex flex-1 flex-col gap-5 p-4">
+      <main className="flex flex-1 flex-col items-center gap-12 px-4 py-6 sm:gap-16 sm:px-6">
         {contextIssues.length > 0 ? (
           <section className="rounded-[32px] border border-white/10 bg-[linear-gradient(160deg,rgba(15,23,42,0.96),rgba(17,24,39,0.92),rgba(3,7,18,0.98))] p-5 shadow-[0_18px_40px_rgba(2,6,23,0.24)]">
             <div className="flex flex-col gap-2">
@@ -220,36 +220,57 @@ export default function FeedView({ date, issues, initialIssueId, previousDate }:
             key={issue.id}
             id={`issue-${issue.id}`}
             data-issue-id={issue.id}
-            className={[
-              'border-border rounded-[32px] border bg-white/3 p-4 shadow-[0_18px_40px_rgba(2,6,23,0.18)] backdrop-blur-sm',
-              initialIssueId === issue.id
-                ? 'ring-accent-blue ring-2 ring-offset-2 ring-offset-slate-950'
-                : '',
-            ]
-              .join(' ')
-              .trim()}
+            className="w-full max-w-2xl"
           >
-            <div className="mb-4 flex items-start justify-between gap-4">
+            <div
+              className={[
+                'rounded-[28px]',
+                initialIssueId === issue.id
+                  ? 'ring-accent-blue ring-2 ring-offset-2 ring-offset-slate-950'
+                  : '',
+              ]
+                .join(' ')
+                .trim()}
+            >
+              <FeedCardStack
+                cards={issue.cardsData}
+                entityType={issue.entityType}
+                entityId={issue.entityId}
+              />
+            </div>
+            <div className="mt-3 flex items-start justify-between gap-3 px-1">
               <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="bg-background/70 text-muted rounded-full px-3 py-1 text-[11px] font-semibold tracking-[0.16em] uppercase">
-                    {issue.entityType}
-                  </span>
+                <p className="text-muted text-xs sm:text-sm">{issue.entityName}</p>
+                <h2 className="text-foreground mt-1 text-sm leading-snug font-medium break-keep sm:text-base">
+                  {issue.title}
+                </h2>
+                <div className="mt-1.5 flex flex-wrap items-center gap-2">
                   {issue.changeValue ? (
                     <span
                       className={[
-                        'rounded-full px-3 py-1 text-sm font-bold',
+                        'text-xs font-bold sm:text-sm',
                         issue.changeValue.startsWith('-')
-                          ? 'bg-accent-red/10 text-accent-red'
-                          : 'bg-accent-green/10 text-accent-green',
+                          ? 'text-accent-red'
+                          : 'text-accent-green',
                       ].join(' ')}
                     >
                       {(issue.changeValue.startsWith('-') ? '▼ ' : '▲ ') + issue.changeValue}
                     </span>
                   ) : null}
+                  <span className="text-muted text-[11px] tracking-[0.14em] uppercase">
+                    {issue.entityType}
+                  </span>
+                  {getVisibleTags(issue.tags).map((tag) => (
+                    <span
+                      key={tag}
+                      className="bg-surface-raised text-muted rounded-full px-2 py-0.5 text-xs"
+                    >
+                      {tag}
+                    </span>
+                  ))}
                 </div>
               </div>
-              <div className="flex shrink-0 flex-col items-end gap-3">
+              <div className="mt-0.5 shrink-0">
                 <FeedShareButton
                   permalink={`${origin}/feed/${date}/issue/${issue.id}`}
                   title={issue.title}
@@ -258,29 +279,6 @@ export default function FeedView({ date, issues, initialIssueId, previousDate }:
                   entityId={issue.entityId}
                 />
               </div>
-            </div>
-            <FeedCardStack
-              cards={issue.cardsData}
-              entityType={issue.entityType}
-              entityId={issue.entityId}
-            />
-            <div className="mt-4 space-y-2">
-              <p className="text-muted text-sm">{issue.entityName}</p>
-              <h2 className="text-foreground text-base leading-7 font-medium break-keep sm:text-lg">
-                {issue.title}
-              </h2>
-              {getVisibleTags(issue.tags).length > 0 ? (
-                <div className="flex flex-wrap gap-2">
-                  {getVisibleTags(issue.tags).map((tag) => (
-                    <span
-                      key={tag}
-                      className="bg-surface-raised text-muted rounded-full px-3 py-1 text-xs"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              ) : null}
             </div>
           </section>
         ))}
