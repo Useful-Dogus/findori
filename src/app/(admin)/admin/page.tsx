@@ -1,6 +1,8 @@
 import { FeedList } from '@/components/features/admin/FeedList'
 import { getAdminFeeds } from '@/lib/admin/feeds'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminPage() {
   try {
     const feeds = await getAdminFeeds()
