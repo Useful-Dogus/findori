@@ -1,4 +1,6 @@
+import { SourceFailureAlertBanner } from '@/components/features/admin/SourceFailureAlert'
 import { PipelineManager } from '@/components/features/admin/PipelineManager'
+import { detectSourceFailures } from '@/lib/admin/pipeline-alerts'
 import { listPipelineLogs } from '@/lib/pipeline'
 import { createAdminClient } from '@/lib/supabase/admin'
 
@@ -9,6 +11,8 @@ export default async function AdminPipelinePage() {
     const client = createAdminClient()
     const { logs, total } = await listPipelineLogs(client, { page: 1, limit: 20 })
 
+    const sourceAlerts = detectSourceFailures(logs)
+
     return (
       <section className="space-y-6">
         <div className="space-y-2">
@@ -18,6 +22,7 @@ export default async function AdminPipelinePage() {
             파이프라인 실행 이력을 확인하고 수동으로 재실행합니다.
           </p>
         </div>
+        <SourceFailureAlertBanner alerts={sourceAlerts} />
         <PipelineManager initialLogs={logs} initialTotal={total} />
       </section>
     )
