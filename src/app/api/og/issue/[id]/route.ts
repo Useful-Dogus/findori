@@ -219,9 +219,13 @@ export async function GET(request: Request, { params }: { params: Params }) {
       ),
     )
 
+    // OG 이미지는 발행 후 변경되지 않으므로 24시간 캐시
     return new ImageResponse(tree, {
       width: 1200,
       height: 630,
+      headers: {
+        'Cache-Control': 's-maxage=86400, stale-while-revalidate=604800',
+      },
     })
   } catch {
     return NextResponse.redirect(new URL('/og-default.png', request.url))

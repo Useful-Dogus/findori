@@ -17,7 +17,10 @@ export async function GET(_request: Request, { params }: { params: Params }) {
       )
     }
 
-    return NextResponse.json(issue, { status: 200 })
+    // 발행된 이슈는 내용이 변경되지 않으므로 24시간 캐시
+    const response = NextResponse.json(issue, { status: 200 })
+    response.headers.set('Cache-Control', 's-maxage=86400, stale-while-revalidate=604800')
+    return response
   } catch {
     return NextResponse.json({ error: 'internal_error' }, { status: 500 })
   }

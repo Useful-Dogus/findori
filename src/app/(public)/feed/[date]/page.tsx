@@ -6,6 +6,9 @@ import FeedErrorState from '@/components/features/feed/FeedErrorState'
 import FeedView from '@/components/features/feed/FeedView'
 import { getPreviousPublishedDate, getPublicFeedByDate, isValidDate } from '@/lib/public/feeds'
 
+// 피드 데이터는 하루 1회 발행되므로 10분 ISR로 Supabase 쿼리 절감
+export const revalidate = 600
+
 type Params = Promise<{ date: string }>
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
