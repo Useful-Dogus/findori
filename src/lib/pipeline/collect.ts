@@ -11,6 +11,9 @@ import type {
 
 const RSS_TIMEOUT_MS = 30_000
 
+const BROWSER_USER_AGENT =
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+
 type ParserLike = Pick<Parser, 'parseURL'>
 
 function getKstDateString(date: Date) {
@@ -103,7 +106,9 @@ export async function collectArticles(
     new Parser({
       timeout: RSS_TIMEOUT_MS,
       headers: {
-        'user-agent': 'findori-pipeline/1.0',
+        'User-Agent': BROWSER_USER_AGENT,
+        Accept: 'application/rss+xml, application/xml, text/xml, */*',
+        'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
       },
     })
 
@@ -120,10 +125,8 @@ export async function collectArticles(
           .filter((article): article is CollectedArticle => article !== null)
           .filter((article) => isSameTargetDate(article.publishedAt, targetDate))
       } catch (error) {
-        errors.push({
-          source: source.name,
-          message: error instanceof Error ? error.message : 'unknown_error',
-        })
+        const message = error instanceof Error ? error.message : 'unknown_error'
+        errors.push({ source: source.name, message })
         return []
       }
     }),
