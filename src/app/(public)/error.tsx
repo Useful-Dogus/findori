@@ -34,7 +34,7 @@ export default function PublicError({ error, reset }: ErrorProps) {
       <div className="flex flex-wrap justify-center gap-3">
         <button
           onClick={reset}
-          className="bg-accent-blue text-foreground rounded-lg px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+          className="bg-accent-blue text-foreground cursor-pointer rounded-lg px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
         >
           다시 시도
         </button>
@@ -46,7 +46,7 @@ export default function PublicError({ error, reset }: ErrorProps) {
         </Link>
         <button
           onClick={handleCopyLink}
-          className="bg-surface text-foreground hover:bg-surface-raised rounded-lg px-5 py-2.5 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+          className="bg-surface text-foreground hover:bg-surface-raised cursor-pointer rounded-lg px-5 py-2.5 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
         >
           {copied ? '복사됨!' : '링크 복사'}
         </button>

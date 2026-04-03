@@ -104,7 +104,7 @@ export function SourcesManager({ initialSources }: Props) {
           <button
             type="submit"
             disabled={adding}
-            className="rounded-xl bg-sky-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-sky-600 disabled:opacity-60"
+            className="cursor-pointer rounded-xl bg-sky-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-sky-600 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {adding ? '등록 중...' : '등록'}
           </button>
@@ -173,7 +173,7 @@ export function SourcesManager({ initialSources }: Props) {
                       disabled={togglingId === source.id}
                       onClick={() => handleToggle(source)}
                       className={[
-                        'rounded-lg px-3 py-1.5 text-xs font-medium transition disabled:opacity-60',
+                        'cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition disabled:cursor-not-allowed disabled:opacity-60',
                         source.active
                           ? 'bg-rose-950/50 text-rose-200 hover:bg-rose-900/50'
                           : 'bg-emerald-950/50 text-emerald-200 hover:bg-emerald-900/50',

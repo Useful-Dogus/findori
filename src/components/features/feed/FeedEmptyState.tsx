@@ -26,7 +26,7 @@ export default function FeedEmptyState({ date, previousDate }: FeedEmptyStatePro
       <div className="flex flex-wrap justify-center gap-3">
         <button
           onClick={() => window.location.reload()}
-          className="bg-accent-blue text-foreground rounded-lg px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+          className="bg-accent-blue text-foreground cursor-pointer rounded-lg px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
         >
           재시도
         </button>

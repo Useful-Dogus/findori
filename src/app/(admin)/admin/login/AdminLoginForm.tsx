@@ -85,7 +85,7 @@ export default function AdminLoginForm({ nextPath, statusMessage }: AdminLoginFo
             disabled={isSubmitting || password.length === 0}
             className={cn(
               'w-full rounded-lg px-4 py-3 text-sm font-semibold',
-              'bg-white text-slate-950 disabled:cursor-not-allowed disabled:opacity-50',
+              'cursor-pointer bg-white text-slate-950 disabled:cursor-not-allowed disabled:opacity-50',
             )}
           >
             {isSubmitting ? '로그인 중...' : '로그인'}

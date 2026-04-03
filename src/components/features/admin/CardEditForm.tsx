@@ -168,7 +168,7 @@ export function CardEditForm({
           type="button"
           onClick={onCancel}
           disabled={disabled}
-          className="rounded-lg border border-slate-700 px-3 py-2 text-sm text-slate-300 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+          className="cursor-pointer rounded-lg border border-slate-700 px-3 py-2 text-sm text-slate-300 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
         >
           취소
         </button>
@@ -176,7 +176,7 @@ export function CardEditForm({
           type="button"
           onClick={onSave}
           disabled={disabled || validationError !== null}
-          className="rounded-lg bg-sky-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-sky-500 disabled:cursor-not-allowed disabled:opacity-50"
+          className="cursor-pointer rounded-lg bg-sky-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-sky-500 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {disabled ? '저장 중...' : '저장'}
         </button>

@@ -85,7 +85,7 @@ export function PipelineManager({ initialLogs, initialTotal }: Props) {
           type="button"
           onClick={handleRun}
           disabled={running}
-          className="rounded-xl bg-sky-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-sky-600 disabled:opacity-60"
+          className="cursor-pointer rounded-xl bg-sky-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-sky-600 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {running ? '실행 중...' : '수동 재실행'}
         </button>

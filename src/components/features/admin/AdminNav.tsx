@@ -67,7 +67,7 @@ export function AdminNav() {
             type="button"
             onClick={handleLogout}
             disabled={pending}
-            className="rounded-full bg-rose-950/70 px-3 py-2 text-sm text-rose-100 transition hover:bg-rose-900 disabled:opacity-60"
+            className="cursor-pointer rounded-full bg-rose-950/70 px-3 py-2 text-sm text-rose-100 transition hover:bg-rose-900 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {pending ? '로그아웃 중...' : '로그아웃'}
           </button>
