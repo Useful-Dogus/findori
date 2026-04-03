@@ -151,9 +151,9 @@ export default function FeedView({ date, issues, initialIssueId, previousDate }:
           </div>
         </div>
       </header>
-      <main className="flex flex-1 flex-col items-center gap-12 px-4 py-6 sm:gap-16 sm:px-6">
+      <main className="flex flex-1 flex-col items-center gap-0 px-4 py-6 sm:px-6">
         {contextIssues.length > 0 ? (
-          <section className="rounded-[32px] border border-white/10 bg-[linear-gradient(160deg,rgba(15,23,42,0.96),rgba(17,24,39,0.92),rgba(3,7,18,0.98))] p-5 shadow-[0_18px_40px_rgba(2,6,23,0.24)]">
+          <section className="w-full max-w-2xl rounded-[32px] border border-white/10 bg-[linear-gradient(160deg,rgba(15,23,42,0.96),rgba(17,24,39,0.92),rgba(3,7,18,0.98))] p-5 shadow-[0_18px_40px_rgba(2,6,23,0.24)]">
             <div className="flex flex-col gap-2">
               <p className="text-[11px] font-semibold tracking-[0.22em] text-cyan-200 uppercase">
                 Market Context
@@ -220,7 +220,7 @@ export default function FeedView({ date, issues, initialIssueId, previousDate }:
             key={issue.id}
             id={`issue-${issue.id}`}
             data-issue-id={issue.id}
-            className="w-full max-w-2xl"
+            className="w-full max-w-2xl pt-10 sm:pt-14"
           >
             <div
               className={[
@@ -238,7 +238,7 @@ export default function FeedView({ date, issues, initialIssueId, previousDate }:
                 entityId={issue.entityId}
               />
             </div>
-            <div className="mt-3 flex items-start justify-between gap-3 px-1">
+            <div className="mt-3 flex items-start justify-between gap-3 border-b border-white/8 px-1 pb-10 sm:pb-14">
               <div className="min-w-0 flex-1">
                 <p className="text-muted text-xs sm:text-sm">{issue.entityName}</p>
                 <h2 className="text-foreground mt-1 text-sm leading-snug font-medium break-keep sm:text-base">

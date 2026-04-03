@@ -24,7 +24,6 @@ const BODY_TEXT_CLASS =
 const HEADING_TEXT_CLASS =
   'leading-tight font-semibold break-keep whitespace-pre-line md:text-[1.65rem] xl:text-[1.8rem]'
 
-const LABEL_TEXT_CLASS = 'text-[11px] font-medium tracking-[0.14em] text-white/70 uppercase'
 
 function cardStyle(visual: CardVisual, imageUrl: string | null): CSSProperties {
   const gradient = `linear-gradient(160deg, ${visual.bg_from}f2, ${visual.bg_via}d9, ${visual.bg_to})`
@@ -368,7 +367,6 @@ export default function FeedCardStack({ cards, entityType, entityId }: FeedCardS
 
   const totalCards = cards?.length ?? 0
   const activeCard = cards?.[activeIndex] ?? null
-  const progress = ((activeIndex + 1) / totalCards) * 100
   const activeImageUrl = useMemo(
     () => (activeCard ? resolveImageUrl(activeCard.visual.imgCategory) : null),
     [activeCard],
@@ -460,26 +458,7 @@ export default function FeedCardStack({ cards, entityType, entityId }: FeedCardS
   }
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-3">
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-muted text-xs font-medium">{progressLabel(activeIndex, totalCards)}</p>
-          <p className={LABEL_TEXT_CLASS}>{activeCard.type}</p>
-        </div>
-        <div
-          aria-hidden="true"
-          className="h-1.5 overflow-hidden rounded-full bg-white/10"
-          role="progressbar"
-          aria-valuemin={1}
-          aria-valuemax={totalCards}
-          aria-valuenow={activeIndex + 1}
-        >
-          <div
-            className="h-full rounded-full bg-white/80 transition-[width] duration-200 ease-out"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      </div>
+    <div className="space-y-3">
       <div
         data-testid="feed-card-swipe"
         onTouchStart={handleTouchStart}
@@ -531,7 +510,7 @@ export default function FeedCardStack({ cards, entityType, entityId }: FeedCardS
         >
           이전 카드
         </button>
-        <p className="text-muted text-xs" aria-live="polite">
+        <p className="text-muted text-xs" aria-live="polite" aria-atomic="true">
           {progressLabel(activeIndex, totalCards)}
         </p>
         <button
