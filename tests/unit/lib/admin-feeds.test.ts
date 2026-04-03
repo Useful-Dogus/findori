@@ -117,6 +117,7 @@ describe('getAdminFeeds', () => {
       status: 'draft',
       publishedAt: null,
       issueCount: 5,
+      isOverdue: true,
     })
     expect(result[1]).toEqual<AdminFeedSummary>({
       id: 'feed-2',
@@ -124,6 +125,7 @@ describe('getAdminFeeds', () => {
       status: 'published',
       publishedAt: '2026-03-02T14:00:00Z',
       issueCount: 3,
+      isOverdue: false,
     })
   })
 
@@ -207,6 +209,7 @@ describe('getAdminFeedByDate', () => {
       status: 'draft',
       publishedAt: null,
       issueCount: 1,
+      isOverdue: true,
     })
 
     expect(result.issues).toHaveLength(1)

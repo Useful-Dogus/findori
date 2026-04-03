@@ -1,3 +1,4 @@
+import { DraftFeedAlert } from '@/components/features/admin/DraftFeedAlert'
 import { FeedList } from '@/components/features/admin/FeedList'
 import { getAdminFeeds } from '@/lib/admin/feeds'
 
@@ -16,6 +17,7 @@ export default async function AdminPage() {
             최신 피드부터 확인하고 날짜별 이슈 검토 화면으로 이동합니다.
           </p>
         </div>
+        <DraftFeedAlert feeds={feeds} />
         <FeedList feeds={feeds} />
       </section>
     )

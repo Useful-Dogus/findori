@@ -61,6 +61,7 @@ export type AdminFeedSummary = {
   status: 'draft' | 'published'
   publishedAt: string | null // ISO 8601
   issueCount: number
+  isOverdue: boolean // 오늘 기준 1일 이상 지난 draft 피드
 }
 
 export type AdminIssueSummary = {
@@ -124,10 +125,24 @@ export async function getAdminFeeds(): Promise<AdminFeedSummary[]> {
     return []
   }
 
+  // 오늘 날짜 (KST 기준 YYYY-MM-DD)
+  const todayKST = new Intl.DateTimeFormat('ko-KR', {
+    timeZone: 'Asia/Seoul',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
+    .format(new Date())
+    .replace(/\. /g, '-')
+    .replace('.', '')
+
   return rows.map((row) => {
     // Supabase 집계: issues(count) → [{ count: N }] 형태
     const countRow = row.issues?.[0]
     const issueCount = countRow?.count ?? 0
+
+    // 오늘 기준 1일 이상 지난 draft 피드 감지
+    const isOverdue = row.status === 'draft' && row.date < todayKST
 
     return {
       id: row.id,
@@ -135,6 +150,7 @@ export async function getAdminFeeds(): Promise<AdminFeedSummary[]> {
       status: row.status,
       publishedAt: row.published_at,
       issueCount,
+      isOverdue,
     }
   })
 }
@@ -181,12 +197,23 @@ export async function getAdminFeedByDate(date: string): Promise<{
   const issueRows = (issuesData ?? []) as IssueRow[]
   const issueCount = issueRows.length
 
+  const todayKSTForDetail = new Intl.DateTimeFormat('ko-KR', {
+    timeZone: 'Asia/Seoul',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
+    .format(new Date())
+    .replace(/\. /g, '-')
+    .replace('.', '')
+
   const feed: AdminFeedSummary = {
     id: feedRow.id,
     date: feedRow.date,
     status: feedRow.status,
     publishedAt: feedRow.published_at,
     issueCount,
+    isOverdue: feedRow.status === 'draft' && feedRow.date < todayKSTForDetail,
   }
 
   const issues: AdminIssueSummary[] = issueRows.map((row) => {
